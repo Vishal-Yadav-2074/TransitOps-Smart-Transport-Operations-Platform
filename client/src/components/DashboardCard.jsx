@@ -1,4 +1,5 @@
 import React from 'react';
+import AnimatedCounter from './AnimatedCounter';
 
 export default function DashboardCard({ title, value, subtext, icon: Icon, trend, color = 'indigo', animate = true }) {
   const colorSchemes = {
@@ -37,16 +38,18 @@ export default function DashboardCard({ title, value, subtext, icon: Icon, trend
       </div>
 
       <div className="mt-4 flex items-baseline gap-2">
-        <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{value}</span>
+        <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <AnimatedCounter value={value} />
+        </span>
         {trend && (
-          <span className={`text-xs font-semibold ${trend.startsWith('+') ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+          <span className={`text-xs font-semibold ${trend.startsWith('+') ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-450'}`}>
             {trend}
           </span>
         )}
       </div>
 
       {subtext && (
-        <span className="mt-1 text-xs text-slate-505 dark:text-slate-450 font-medium">{subtext}</span>
+        <span className="mt-1 text-xs text-slate-550 dark:text-slate-450 font-medium">{subtext}</span>
       )}
     </div>
   );

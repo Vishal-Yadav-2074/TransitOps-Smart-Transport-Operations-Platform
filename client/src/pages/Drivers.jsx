@@ -11,6 +11,12 @@ export default function Drivers() {
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  // Filters state
+  const [filterCategory, setFilterCategory] = useState('All');
+  const [filterStatus, setFilterStatus] = useState('All');
 
   // Form states
   const [name, setName] = useState('');
@@ -39,6 +45,11 @@ export default function Drivers() {
 
   useEffect(() => {
     fetchDrivers();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('add') === 'true') {
+      setModalOpen(true);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
 
   const openAddModal = () => {
@@ -54,15 +65,15 @@ export default function Drivers() {
     setModalOpen(true);
   };
 
-  const openEditModal = (driver) => {
-    setEditingId(driver.id);
-    setName(driver.name);
-    setLicenseNo(driver.licenseNo);
-    setLicenseCategory(driver.licenseCategory);
-    setLicenseExpiry(driver.licenseExpiry ? driver.licenseExpiry.substring(0, 7) : '');
-    setContactNo(driver.contactNo || '');
-    setSafetyScore(driver.safetyScore);
-    setState(driver.state);
+  const openEditModal = (v) => {
+    setEditingId(v.id);
+    setName(v.name);
+    setLicenseNo(v.licenseNo);
+    setLicenseCategory(v.licenseCategory);
+    setLicenseExpiry(v.licenseExpiry ? v.licenseExpiry.substring(0, 7) : '');
+    setContactNo(v.contactNo);
+    setSafetyScore(v.safetyScore);
+    setState(v.state);
     setError('');
     setModalOpen(true);
   };
@@ -75,7 +86,7 @@ export default function Drivers() {
       name,
       licenseNo,
       licenseCategory,
-      licenseExpiry: licenseExpiry.length === 7 ? `${licenseExpiry}-01` : licenseExpiry,
+      licenseExpiry,
       contactNo,
       safetyScore: parseFloat(safetyScore),
       state
@@ -84,24 +95,21 @@ export default function Drivers() {
     try {
       if (editingId) {
         await driverService.update(editingId, payload);
+        setToast('Driver Updated Successfully');
       } else {
         await driverService.create(payload);
+        setToast('Driver Added Successfully');
       }
       setModalOpen(false);
       fetchDrivers();
+      setTimeout(() => setToast(null), 3000);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to save driver details.');
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this driver?')) return;
-    try {
-      await driverService.delete(id);
-      fetchDrivers();
-    } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete driver.');
-    }
+  const handleDelete = (id) => {
+    setDeleteConfirmId(id);
   };
 
   // Check compliance locally for visual rendering (Year-Month based)
@@ -198,6 +206,13 @@ export default function Drivers() {
     }
   ];
 
+  // Compute filtered array
+  const filteredDrivers = drivers.filter(d => {
+    const matchesCategory = filterCategory === 'All' || d.licenseCategory === filterCategory;
+    const matchesStatus = filterStatus === 'All' || d.state === filterStatus;
+    return matchesCategory && matchesStatus;
+  });
+
   return (
     <div className="space-y-6">
       
@@ -217,8 +232,39 @@ export default function Drivers() {
         )}
       </div>
 
+      {/* Advanced Filters */}
+      <div className="flex flex-wrap gap-4 items-center p-4 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-md">
+        <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Filters:</span>
+        <div className="flex gap-2 items-center">
+          <span className="text-xs font-semibold text-slate-505 dark:text-slate-400">Category</span>
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-indigo-650 focus:outline-none transition-colors"
+          >
+            <option value="All">All Categories</option>
+            <option value="HGV">HGV (Heavy Goods)</option>
+            <option value="LMV">LMV (Light Motor)</option>
+          </select>
+        </div>
+        <div className="flex gap-2 items-center">
+          <span className="text-xs font-semibold text-slate-505 dark:text-slate-400">Status</span>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-indigo-650 focus:outline-none transition-colors"
+          >
+            <option value="All">All Statuses</option>
+            <option value="available">Available</option>
+            <option value="on_trip">On Trip</option>
+            <option value="off_duty">Off Duty</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+      </div>
+
       {/* Table */}
-      <DataTable columns={columns} data={drivers} loading={loading} emptyText="No drivers registered yet." />
+      <DataTable columns={columns} data={filteredDrivers} loading={loading} emptyText="No drivers match search criteria." />
 
       {/* Modal Dialog Form */}
       {modalOpen && (
@@ -346,6 +392,46 @@ export default function Drivers() {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xl animate-scale-up text-left">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Delete Driver?</h3>
+            <p className="text-xs text-slate-500 mb-6">Are you sure you want to remove this driver profile from the active safety registry? This action cannot be undone.</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-650 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    await driverService.delete(deleteConfirmId);
+                    setDeleteConfirmId(null);
+                    fetchDrivers();
+                    setToast('Driver Deleted Successfully');
+                    setTimeout(() => setToast(null), 3000);
+                  } catch (err) {
+                    alert(err.response?.data?.message || 'Failed to delete driver.');
+                  }
+                }}
+                className="px-4 py-2 rounded-xl bg-red-650 hover:bg-red-500 text-xs font-semibold text-white shadow-md transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-emerald-250 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/80 p-4 text-xs font-semibold text-emerald-600 dark:text-emerald-400 shadow-lg backdrop-blur-md animate-slide-in">
+          <span>✅</span>
+          <span>{toast}</span>
         </div>
       )}
     </div>

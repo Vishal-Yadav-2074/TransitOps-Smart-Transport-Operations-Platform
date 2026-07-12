@@ -11,6 +11,12 @@ export default function Vehicles() {
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  // Filters state
+  const [filterType, setFilterType] = useState('All');
+  const [filterStatus, setFilterStatus] = useState('All');
 
   // Form states
   const [name, setName] = useState('');
@@ -28,10 +34,10 @@ export default function Vehicles() {
   const fetchVehicles = async () => {
     try {
       setLoading(true);
-      const data = await vehicleService.getAll();
-      setVehicles(data.data);
+      const res = await vehicleService.getAll();
+      setVehicles(res.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Error fetching vehicles.');
+      setError(err.response?.data?.message || 'Error fetching vehicle list.');
     } finally {
       setLoading(false);
     }
@@ -39,6 +45,11 @@ export default function Vehicles() {
 
   useEffect(() => {
     fetchVehicles();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('add') === 'true') {
+      setModalOpen(true);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
 
   const openAddModal = () => {
@@ -47,22 +58,22 @@ export default function Vehicles() {
     setRegistrationNo('');
     setVehicleType('van');
     setMaxCapacity('');
-    setOdometer('0');
+    setOdometer('');
     setAcquisitionCost('');
     setState('available');
     setError('');
     setModalOpen(true);
   };
 
-  const openEditModal = (vehicle) => {
-    setEditingId(vehicle.id);
-    setName(vehicle.name);
-    setRegistrationNo(vehicle.registrationNo);
-    setVehicleType(vehicle.vehicleType);
-    setMaxCapacity(vehicle.maxCapacity);
-    setOdometer(vehicle.odometer);
-    setAcquisitionCost(vehicle.acquisitionCost);
-    setState(vehicle.state);
+  const openEditModal = (v) => {
+    setEditingId(v.id);
+    setName(v.name);
+    setRegistrationNo(v.registrationNo);
+    setVehicleType(v.vehicleType);
+    setMaxCapacity(v.maxCapacity);
+    setOdometer(v.odometer);
+    setAcquisitionCost(v.acquisitionCost);
+    setState(v.state);
     setError('');
     setModalOpen(true);
   };
@@ -84,62 +95,60 @@ export default function Vehicles() {
     try {
       if (editingId) {
         await vehicleService.update(editingId, payload);
+        setToast('Vehicle Updated Successfully');
       } else {
         await vehicleService.create(payload);
+        setToast('Vehicle Added Successfully');
       }
       setModalOpen(false);
       fetchVehicles();
+      setTimeout(() => setToast(null), 3000);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to save vehicle details.');
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this vehicle?')) return;
-    try {
-      await vehicleService.delete(id);
-      fetchVehicles();
-    } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete vehicle.');
-    }
+  const handleDelete = (id) => {
+    setDeleteConfirmId(id);
   };
+
+  // Compute filtered array
+  const filteredVehicles = vehicles.filter(v => {
+    const matchesType = filterType === 'All' || v.vehicleType === filterType;
+    const matchesStatus = filterStatus === 'All' || v.state === filterStatus;
+    return matchesType && matchesStatus;
+  });
 
   const columns = [
     { header: 'Vehicle', key: 'name', render: (row) => <span className="font-semibold text-slate-900 dark:text-white">{row.name}</span> },
-    { header: 'Registration', key: 'registrationNo', render: (row) => <code className="text-indigo-600 dark:text-indigo-400 font-mono">{row.registrationNo}</code> },
+    { header: 'Registration No', key: 'registrationNo', render: (row) => <code className="text-indigo-650 dark:text-indigo-400 font-mono">{row.registrationNo}</code> },
     { header: 'Type', key: 'vehicleType', render: (row) => <span className="capitalize">{row.vehicleType}</span> },
     { header: 'Max Capacity (kg)', key: 'maxCapacity' },
     { header: 'Odometer (km)', key: 'odometer' },
     { 
       header: 'Operational Cost', 
       key: 'operationalCost', 
-      render: (row) => <span>₹{parseFloat(row.operationalCost || 0).toFixed(2)}</span>
+      render: (row) => <span>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(row.operationalCost || 0)}</span> 
     },
     { 
-      header: 'ROI', 
+      header: 'Yield (ROI)', 
       key: 'vehicleRoi', 
       render: (row) => {
-        const roi = parseFloat(row.vehicleRoi || 0) * 100;
-        return (
-          <span className={`font-bold ${roi >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
-            {roi.toFixed(2)}%
-          </span>
-        );
+        const val = parseFloat(row.vehicleRoi || 0) * 100;
+        const color = val >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-450';
+        return <span className={`font-bold ${color}`}>{val.toFixed(2)}%</span>;
       }
     },
     { 
       header: 'Status', 
       key: 'state', 
       render: (row) => {
-        const statusColors = {
-          available: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/30',
-          on_trip: 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/30',
-          in_shop: 'bg-red-50 dark:bg-red-950/40 text-red-650 dark:text-red-400 border-red-200 dark:border-red-900/30',
-          retired: 'bg-slate-100 dark:bg-slate-850/40 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700/30'
-        };
+        let badgeColor = 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-900/30';
+        if (row.state === 'on_trip') badgeColor = 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 border-amber-250 dark:border-amber-900/30';
+        else if (row.state === 'in_shop') badgeColor = 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-955/20 border-rose-250 dark:border-rose-900/30';
         return (
-          <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-md border ${statusColors[row.state] || 'bg-slate-100 dark:bg-slate-800'}`}>
-            {row.state.replace('_', ' ')}
+          <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded border capitalize ${badgeColor}`}>
+            {row.state === 'in_shop' ? 'In Shop' : row.state === 'on_trip' ? 'On Trip' : row.state}
           </span>
         );
       }
@@ -148,11 +157,12 @@ export default function Vehicles() {
       header: 'Actions',
       key: 'actions',
       render: (row) => (
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           {canEdit && (
             <button
               onClick={() => openEditModal(row)}
-              className="p-1.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white border border-slate-200 dark:border-slate-700 hover:border-slate-350 dark:hover:border-slate-600 transition-colors"
+              className="p-1 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-505 dark:text-slate-400 hover:text-indigo-650 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-200 dark:hover:border-indigo-950/30 transition-colors"
+              title="Edit Details"
             >
               <Pencil className="h-3.5 w-3.5" />
             </button>
@@ -160,7 +170,8 @@ export default function Vehicles() {
           {canDelete && (
             <button
               onClick={() => handleDelete(row.id)}
-              className="p-1.5 rounded bg-slate-100 dark:bg-slate-850 text-slate-500 hover:text-red-655 dark:hover:text-red-400 border border-slate-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-950/30 transition-colors"
+              className="p-1 rounded bg-slate-105 dark:bg-slate-800/80 text-slate-505 dark:text-slate-400 hover:text-red-655 dark:hover:text-red-400 border border-slate-200 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-950/30 transition-colors"
+              title="Delete File"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
@@ -176,7 +187,7 @@ export default function Vehicles() {
       {/* Header section */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Vehicles Registry</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Fleet Inventory</h2>
           <p className="text-xs font-medium text-slate-505 dark:text-slate-400 mt-1">Manage fleet capacities and ROI configurations (INR Localized)</p>
         </div>
         {canEdit && (
@@ -189,8 +200,39 @@ export default function Vehicles() {
         )}
       </div>
 
+      {/* Advanced Filters */}
+      <div className="flex flex-wrap gap-4 items-center p-4 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-md">
+        <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Filters:</span>
+        <div className="flex gap-2 items-center">
+          <span className="text-xs font-semibold text-slate-505 dark:text-slate-400">Type</span>
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-indigo-650 focus:outline-none transition-colors"
+          >
+            <option value="All">All Types</option>
+            <option value="truck">Truck</option>
+            <option value="pickup">Pickup</option>
+            <option value="van">Van</option>
+          </select>
+        </div>
+        <div className="flex gap-2 items-center">
+          <span className="text-xs font-semibold text-slate-505 dark:text-slate-400">Status</span>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-indigo-650 focus:outline-none transition-colors"
+          >
+            <option value="All">All Statuses</option>
+            <option value="available">Available</option>
+            <option value="on_trip">On Trip</option>
+            <option value="in_shop">In Shop</option>
+          </select>
+        </div>
+      </div>
+
       {/* Main Table */}
-      <DataTable columns={columns} data={vehicles} loading={loading} emptyText="No vehicles registered yet." />
+      <DataTable columns={columns} data={filteredVehicles} loading={loading} emptyText="No vehicles match search criteria." />
 
       {/* Modal Dialog Form */}
       {modalOpen && (
@@ -321,6 +363,46 @@ export default function Vehicles() {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xl animate-scale-up text-left">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Delete Vehicle?</h3>
+            <p className="text-xs text-slate-500 mb-6">Are you sure you want to remove this vehicle asset from the active command inventory? This action cannot be undone.</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-650 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    await vehicleService.delete(deleteConfirmId);
+                    setDeleteConfirmId(null);
+                    fetchVehicles();
+                    setToast('Vehicle Deleted Successfully');
+                    setTimeout(() => setToast(null), 3000);
+                  } catch (err) {
+                    alert(err.response?.data?.message || 'Failed to delete vehicle.');
+                  }
+                }}
+                className="px-4 py-2 rounded-xl bg-red-650 hover:bg-red-500 text-xs font-semibold text-white shadow-md transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-emerald-250 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/80 p-4 text-xs font-semibold text-emerald-600 dark:text-emerald-400 shadow-lg backdrop-blur-md animate-slide-in">
+          <span>✅</span>
+          <span>{toast}</span>
         </div>
       )}
     </div>

@@ -11,6 +11,7 @@ export default function FuelExpenses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [toast, setToast] = useState(null);
 
   // Form states
   const [name, setName] = useState('');
@@ -39,6 +40,11 @@ export default function FuelExpenses() {
 
   useEffect(() => {
     fetchData();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('add') === 'true') {
+      setModalOpen(true);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
 
   const openAddModal = () => {
@@ -65,8 +71,10 @@ export default function FuelExpenses() {
 
     try {
       await vehicleService.createExpense(payload);
+      setToast('Expense Recorded Successfully');
       setModalOpen(false);
       fetchData();
+      setTimeout(() => setToast(null), 3000);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to log expense.');
     }
@@ -223,6 +231,13 @@ export default function FuelExpenses() {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-emerald-250 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/80 p-4 text-xs font-semibold text-emerald-600 dark:text-emerald-400 shadow-lg backdrop-blur-md animate-slide-in">
+          <span>✅</span>
+          <span>{toast}</span>
         </div>
       )}
     </div>

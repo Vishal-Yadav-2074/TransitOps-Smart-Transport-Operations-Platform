@@ -14,6 +14,8 @@ export default function Trips() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [cancelConfirmId, setCancelConfirmId] = useState(null);
 
   // Form states
   const [source, setSource] = useState('');
@@ -52,6 +54,11 @@ export default function Trips() {
 
   useEffect(() => {
     fetchData();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('add') === 'true') {
+      setModalOpen(true);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
 
   const openAddModal = () => {
@@ -77,13 +84,15 @@ export default function Trips() {
       driverId: parseInt(driverId),
       cargoWeight: parseFloat(cargoWeight),
       plannedDist: parseFloat(plannedDist),
-      revenue: parseFloat(revenue || 0)
+      revenue: parseFloat(revenue)
     };
 
     try {
       await tripService.create(payload);
+      setToast('Trip Booked Successfully');
       setModalOpen(false);
       fetchData();
+      setTimeout(() => setToast(null), 3000);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to dispatch/save trip.');
     }
@@ -92,7 +101,9 @@ export default function Trips() {
   const handleDispatch = async (id) => {
     try {
       await tripService.dispatch(id);
+      setToast('Trip Dispatched');
       fetchData();
+      setTimeout(() => setToast(null), 3000);
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to dispatch trip.');
     }
@@ -101,20 +112,16 @@ export default function Trips() {
   const handleComplete = async (id) => {
     try {
       await tripService.complete(id);
+      setToast('Trip Completed');
       fetchData();
+      setTimeout(() => setToast(null), 3000);
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to complete trip.');
     }
   };
 
-  const handleCancel = async (id) => {
-    if (!window.confirm('Are you sure you want to cancel this trip?')) return;
-    try {
-      await tripService.cancel(id);
-      fetchData();
-    } catch (err) {
-      alert(err.response?.data?.message || 'Failed to cancel trip.');
-    }
+  const handleCancel = (id) => {
+    setCancelConfirmId(id);
   };
 
   const columns = [
@@ -336,6 +343,46 @@ export default function Trips() {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {cancelConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xl animate-scale-up text-left">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Cancel Trip?</h3>
+            <p className="text-xs text-slate-500 mb-6">Are you sure you want to cancel this scheduled trip dispatch? This will release the assigned driver and vehicle.</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setCancelConfirmId(null)}
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-650 dark:text-slate-355 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    await tripService.cancel(cancelConfirmId);
+                    setCancelConfirmId(null);
+                    fetchData();
+                    setToast('Trip Cancelled Successfully');
+                    setTimeout(() => setToast(null), 3000);
+                  } catch (err) {
+                    alert(err.response?.data?.message || 'Failed to cancel trip.');
+                  }
+                }}
+                className="px-4 py-2 rounded-xl bg-red-650 hover:bg-red-500 text-xs font-semibold text-white shadow-md transition-colors"
+              >
+                Cancel Trip
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-emerald-250 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/80 p-4 text-xs font-semibold text-emerald-600 dark:text-emerald-400 shadow-lg backdrop-blur-md animate-slide-in">
+          <span>✅</span>
+          <span>{toast}</span>
         </div>
       )}
     </div>

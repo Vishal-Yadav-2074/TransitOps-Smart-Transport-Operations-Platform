@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
+import GlobalSearch from './GlobalSearch';
+import NotificationCenter from './NotificationCenter';
 import { Menu, LogOut, User as UserIcon, Shield, Sun, Moon } from 'lucide-react';
 
 export default function Navbar({ setSidebarOpen }) {
@@ -50,6 +52,12 @@ export default function Navbar({ setSidebarOpen }) {
 
       {/* Actions */}
       <div className="flex items-center gap-4 ml-auto">
+        {/* Search Everywhere */}
+        <GlobalSearch />
+
+        {/* Dynamic Alerts */}
+        <NotificationCenter />
+
         {/* Day/Night Theme Toggle */}
         <button
           onClick={toggleTheme}

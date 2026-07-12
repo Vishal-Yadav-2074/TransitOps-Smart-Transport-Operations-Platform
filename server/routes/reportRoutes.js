@@ -7,5 +7,6 @@ const authorizeRoles = require('../middleware/roleMiddleware');
 router.use(auth); // Require JWT for analytics queries
 
 router.get('/stats', authorizeRoles('Fleet Manager', 'Financial Analyst', 'Safety Officer'), reportController.getDashboardStats);
+router.post('/trigger-reminders', authorizeRoles('Fleet Manager', 'Safety Officer'), reportController.triggerEmailReminders);
 
 module.exports = router;

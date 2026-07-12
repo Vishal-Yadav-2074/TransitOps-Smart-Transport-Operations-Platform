@@ -35,6 +35,17 @@ app.use('/api/maintenances', maintenanceRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/reports', reportRoutes);
 
+// Serve static client assets from Vite build output
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// Fallback to React Router for any non-API page routes
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
 // Global fallback error router
 app.use(errorHandler);
 
