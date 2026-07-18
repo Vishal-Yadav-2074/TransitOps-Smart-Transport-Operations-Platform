@@ -98,7 +98,7 @@ export default function AIFleetAssistant() {
   };
 
   return (
-    <div className="fixed bottom-5 left-5 lg:left-[280px] z-45 flex flex-col items-start font-sans">
+    <div className="fixed bottom-5 left-5 lg:left-[304px] z-45 flex flex-col items-start font-sans">
       {/* Floating trigger button */}
       {!isOpen && (
         <button
