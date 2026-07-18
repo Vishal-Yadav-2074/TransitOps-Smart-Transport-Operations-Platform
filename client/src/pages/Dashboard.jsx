@@ -233,41 +233,54 @@ export default function Dashboard() {
           icon={Users}
           color="indigo"
         />
-      </div>
-
-      {/* Quick Action shortcuts */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5 backdrop-blur-md shadow-sm">
-        <h3 className="text-xs font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase mb-3 text-left">Quick Fleet Operations</h3>
-        <div className="grid gap-3 grid-cols-2 md:grid-cols-5">
+      </div>      {/* Quick Action shortcuts */}
+      <div className="rounded-2xl border border-slate-205 dark:border-white/5 bg-white/60 dark:bg-[#131722]/65 p-5 backdrop-blur-md shadow-sm">
+        <h3 className="text-xs font-black tracking-widest text-slate-505 dark:text-slate-400 uppercase mb-4 text-left">Quick Fleet Operations</h3>
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-5">
           <Link
             to="/vehicles?add=true"
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-indigo-200/60 dark:border-indigo-900/40 bg-indigo-50/50 dark:bg-indigo-950/20 text-xs font-bold text-indigo-650 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-all active:scale-95 shadow-sm"
+            className="group flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-indigo-500/15 bg-gradient-to-br from-indigo-500/5 to-indigo-900/5 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all duration-300 shadow-sm glow-hover text-center"
           >
-            <Plus className="h-4 w-4" /> Register Vehicle
+            <div className="p-3 bg-indigo-500/10 dark:bg-indigo-950/40 rounded-xl text-indigo-500 dark:text-indigo-400 group-hover:rotate-12 transition-transform duration-300 shadow-inner">
+              <Plus className="h-5 w-5" />
+            </div>
+            <span className="text-[10px] font-black tracking-wider uppercase">Register Vehicle</span>
           </Link>
           <Link
             to="/drivers?add=true"
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-emerald-200/60 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/20 text-xs font-bold text-emerald-650 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-all active:scale-95 shadow-sm"
+            className="group flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-emerald-500/15 bg-gradient-to-br from-emerald-500/5 to-emerald-900/5 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all duration-300 shadow-sm glow-hover text-center"
           >
-            <Plus className="h-4 w-4" /> Register Driver
+            <div className="p-3 bg-emerald-500/10 dark:bg-emerald-950/40 rounded-xl text-emerald-500 dark:text-emerald-400 group-hover:rotate-12 transition-transform duration-300 shadow-inner">
+              <Plus className="h-5 w-5" />
+            </div>
+            <span className="text-[10px] font-black tracking-wider uppercase">Register Driver</span>
           </Link>
           <Link
             to="/trips?add=true"
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-amber-200/60 dark:border-amber-900/40 bg-amber-50/50 dark:bg-amber-950/20 text-xs font-bold text-amber-650 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-all active:scale-95 shadow-sm"
+            className="group flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-amber-500/15 bg-gradient-to-br from-amber-500/5 to-amber-900/5 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all duration-300 shadow-sm glow-hover text-center"
           >
-            <Plus className="h-4 w-4" /> Book Trip
+            <div className="p-3 bg-amber-500/10 dark:bg-amber-950/40 rounded-xl text-amber-500 dark:text-amber-450 group-hover:rotate-12 transition-transform duration-300 shadow-inner">
+              <Plus className="h-5 w-5" />
+            </div>
+            <span className="text-[10px] font-black tracking-wider uppercase">Book Trip</span>
           </Link>
           <Link
             to="/expenses?add=true"
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-rose-200/60 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20 text-xs font-bold text-rose-650 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/30 transition-all active:scale-95 shadow-sm"
+            className="group flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-rose-500/15 bg-gradient-to-br from-rose-500/5 to-rose-900/5 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all duration-300 shadow-sm glow-hover text-center"
           >
-            <Plus className="h-4 w-4" /> Log Expense
+            <div className="p-3 bg-rose-500/10 dark:bg-rose-955/40 rounded-xl text-rose-500 dark:text-rose-455 group-hover:rotate-12 transition-transform duration-300 shadow-inner">
+              <Plus className="h-5 w-5" />
+            </div>
+            <span className="text-[10px] font-black tracking-wider uppercase">Log Expense</span>
           </Link>
           <Link
             to="/maintenance?add=true"
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-purple-200/60 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/20 text-xs font-bold text-purple-650 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all active:scale-95 shadow-sm"
+            className="group flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-purple-500/15 bg-gradient-to-br from-purple-500/5 to-purple-900/5 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all duration-300 shadow-sm glow-hover text-center"
           >
-            <Plus className="h-4 w-4" /> Log Repair
+            <div className="p-3 bg-purple-500/10 dark:bg-purple-950/40 rounded-xl text-purple-500 dark:text-purple-400 group-hover:rotate-12 transition-transform duration-300 shadow-inner">
+              <Plus className="h-5 w-5" />
+            </div>
+            <span className="text-[10px] font-black tracking-wider uppercase">Log Repair</span>
           </Link>
         </div>
       </div>
