@@ -4,7 +4,6 @@ import vehicleService from '../services/vehicleService';
 import { Calendar, ChevronLeft, ChevronRight, Filter, Milestone, Wrench, Clock, Info } from 'lucide-react';
 import TripDrawer from '../components/TripDrawer';
 import MaintDrawer from '../components/MaintDrawer';
-import Loader from '../components/Loader';
 import { useToast } from '../contexts/ToastContext';
 
 export default function CalendarView() {
@@ -229,10 +228,9 @@ export default function CalendarView() {
         </div>
       </div>
 
-      {/* Loading state */}
       {loading ? (
         <div className="h-96 w-full flex items-center justify-center bg-white dark:bg-slate-900/40 rounded-3xl border border-slate-200 dark:border-slate-800 backdrop-blur-md">
-          <Loader />
+          <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#7C3AED] border-t-transparent" />
         </div>
       ) : (
         <div className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm backdrop-blur-md">
