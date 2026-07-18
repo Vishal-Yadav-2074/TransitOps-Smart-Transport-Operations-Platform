@@ -52,6 +52,7 @@ export default function Dashboard() {
   const [error, setError] = useState('');
   const [activeScheduleTab, setActiveScheduleTab] = useState('trips');
   const [activeChartTab, setActiveChartTab] = useState('financials');
+  const [lastUpdated] = useState(() => new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }));
 
   useEffect(() => {
     async function fetchStats() {
@@ -143,17 +144,25 @@ export default function Dashboard() {
       
       {/* Page Title & Live Status */}
       <div className="flex flex-wrap justify-between items-center gap-4">
-        <div>
-          <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 to-indigo-400 bg-clip-text text-transparent dark:from-white dark:to-brand-200">
-            Enterprise Fleet Command Center
+        <div className="text-left">
+          <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+            Welcome back, <span className="text-[#8B5CF6]">Fleet Manager</span> 👋
           </h2>
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1">
-            Real-time telemetry, compliance gates, and operational yield metrics (INR Localized)
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1.5">
+            Here's what's happening with your fleet today.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/20 px-3.5 py-2 rounded-2xl border border-brand-200/60 dark:border-brand-900/30 shadow-sm">
-          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
-          Telemetry Synchronized
+        
+        {/* Live Sync Card */}
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl border border-slate-205 dark:border-white/5 bg-slate-50 dark:bg-[#131722]/65 text-xs text-slate-600 dark:text-slate-400 shadow-sm animate-scale-up">
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <div className="flex flex-col text-left">
+            <span className="font-bold text-slate-900 dark:text-white leading-none">Sync Status: Live</span>
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Last updated: {lastUpdated}</span>
+          </div>
         </div>
       </div>
 
