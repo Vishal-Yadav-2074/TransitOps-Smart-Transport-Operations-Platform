@@ -5,7 +5,7 @@ export default function DataTable({ columns, data, loading, emptyText = 'No data
     return (
       <div className="w-full overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 backdrop-blur-md shadow-sm">
         <table className="w-full border-collapse text-left text-sm text-slate-700 dark:text-slate-350">
-          <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-[#131722] border-b border-slate-200 dark:border-white/5 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             <tr>
               {columns.map((col, idx) => (
                 <th key={idx} className="px-6 py-4 font-semibold">
@@ -14,12 +14,12 @@ export default function DataTable({ columns, data, loading, emptyText = 'No data
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60">
+          <tbody className="divide-y divide-slate-200 dark:divide-white/5">
             {Array.from({ length: 5 }).map((_, rowIdx) => (
               <tr key={rowIdx} className="animate-pulse">
                 {columns.map((_, colIdx) => (
                   <td key={colIdx} className="px-6 py-4.5 align-middle">
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-2/3" />
+                    <div className="h-4 bg-slate-200 dark:bg-slate-850 rounded w-2/3" />
                   </td>
                 ))}
               </tr>
@@ -31,9 +31,9 @@ export default function DataTable({ columns, data, loading, emptyText = 'No data
   }
 
   return (
-    <div className="w-full overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 backdrop-blur-md shadow-sm">
+    <div className="w-full overflow-x-auto rounded-2xl border border-slate-205 dark:border-white/5 bg-white dark:bg-[#131722]/65 backdrop-blur-md shadow-sm">
       <table className="w-full border-collapse text-left text-sm text-slate-700 dark:text-slate-350">
-        <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-[#131722] border-b border-slate-200 dark:border-white/5 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
           <tr>
             {columns.map((col, idx) => (
               <th key={idx} className="px-6 py-4 font-semibold">
@@ -42,7 +42,7 @@ export default function DataTable({ columns, data, loading, emptyText = 'No data
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60">
+        <tbody className="divide-y divide-slate-200 dark:divide-white/5">
           {data.length === 0 ? (
             <tr>
               <td colSpan={columns.length} className="px-6 py-12 text-center">
