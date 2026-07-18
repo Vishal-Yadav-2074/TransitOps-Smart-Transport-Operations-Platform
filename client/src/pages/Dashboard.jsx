@@ -173,7 +173,7 @@ export default function Dashboard() {
           value={stats.counts.tripsToday}
           subtext="Dispatched / scheduled today"
           icon={Route}
-          color="indigo"
+          color="purple"
         />
         <DashboardCard 
           title="Revenue Today"
@@ -187,7 +187,7 @@ export default function Dashboard() {
           value={formatCurrency(stats.financials.profitToday || 0)}
           subtext="Net operational margin today"
           icon={IndianRupee}
-          color="green"
+          color="orange"
         />
         <DashboardCard 
           title="Fleet Utilization"
@@ -201,7 +201,7 @@ export default function Dashboard() {
           value={formatCurrency(stats.financials.fuelCostToday)}
           subtext="Logged fuel expenses today"
           icon={Flame}
-          color="yellow"
+          color="red"
         />
         <DashboardCard 
           title="Maintenance Count"
@@ -222,7 +222,7 @@ export default function Dashboard() {
           value={stats.counts.vehicles}
           subtext="Total registered assets"
           icon={Truck}
-          color="indigo"
+          color="blue"
         />
         <DashboardCard 
           title="Total Drivers"
