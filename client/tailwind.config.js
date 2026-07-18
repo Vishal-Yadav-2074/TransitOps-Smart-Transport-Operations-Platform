@@ -14,11 +14,11 @@ export default {
           200: '#c7d2fe',
           300: '#a5b4fc',
           400: '#818cf8',
-          500: '#4f46e5', // Royal indigo primary
-          600: '#4338ca',
-          700: '#3730a3',
-          800: '#312e81',
-          900: '#1e1b4b',
+          500: '#7c3aed', // Primary Accent
+          600: '#8b5cf6', // Secondary Accent
+          700: '#6d28d9',
+          800: '#5b21b6',
+          900: '#4c1d95',
         },
         slate: {
           50: '#f8fafc',
@@ -26,22 +26,24 @@ export default {
           150: '#e2e8f0',
           200: '#e2e8f0',
           300: '#cbd5e1',
-          400: '#94a3b8',
-          450: '#64748b',
-          500: '#64748b',
-          505: '#64748b',
+          400: '#b8b8c5', // Secondary Text
+          450: '#71717a', // Muted Text
+          500: '#71717a',
+          505: '#71717a',
           600: '#475569',
           650: '#334155',
-          700: '#334155',
-          800: '#1d1b38', // Glowing dark violet border
-          850: '#1e293b',
-          900: '#131224', // Card panel dark background
-          950: '#0b0a12', // Main canvas background
-          955: '#0b0a12',
+          700: '#181d28', // Secondary Surface
+          800: 'rgba(255,255,255,0.08)', // Border
+          850: '#181d28', // Secondary Surface
+          900: '#131722', // Cards background
+          910: '#10131a', // Navbar background
+          920: '#0d1018', // Sidebar background
+          950: '#09090b', // Canvas background
+          955: '#09090b',
         }
       },
       fontFamily: {
-        sans: ['Outfit', 'Inter', 'sans-serif'],
+        sans: ['Inter', 'Outfit', 'sans-serif'],
       }
     },
   },

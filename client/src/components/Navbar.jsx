@@ -33,7 +33,7 @@ export default function Navbar({ setSidebarOpen }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 shadow-md justify-between items-center text-slate-800 dark:text-slate-100">
+    <header className="sticky top-0 z-30 flex h-16 w-full bg-white dark:bg-slate-910 border-b border-slate-200 dark:border-slate-800 px-4 shadow-md justify-between items-center text-slate-800 dark:text-slate-100">
       {/* Mobile Toggle Button */}
       <button
         onClick={() => setSidebarOpen(prev => !prev)}
