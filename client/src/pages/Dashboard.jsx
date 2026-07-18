@@ -10,6 +10,7 @@ import DriverLeaderboard from '../components/DriverLeaderboard';
 import VehicleTimeline from '../components/VehicleTimeline';
 import Loader from '../components/Loader';
 import SkeletonLoader from '../components/SkeletonLoader';
+import AlertsPanel from '../components/AlertsPanel';
 import { 
   Truck, 
   Users, 
