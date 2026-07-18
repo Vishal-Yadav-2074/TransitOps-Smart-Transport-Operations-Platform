@@ -104,7 +104,6 @@ export default function GlobalSearch() {
 
   return (
     <>
-      {/* Search Input Trigger */}
       <div className="relative max-w-xs w-64 hidden md:block">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
           <Search className="h-4 w-4" />
@@ -114,11 +113,11 @@ export default function GlobalSearch() {
           placeholder="Search everywhere..."
           onClick={() => setIsOpen(true)}
           readOnly
-          className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 cursor-pointer focus:outline-none hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-205 dark:border-white/5 bg-slate-50 dark:bg-[#131722]/60 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 cursor-pointer focus:outline-none hover:bg-slate-100 dark:hover:bg-[#131722] transition-colors"
         />
         <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
-          <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded shadow-sm">
-            ⌘K
+          <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 bg-white dark:bg-slate-920 border border-slate-200 dark:border-white/5 rounded shadow-sm">
+            Ctrl + K
           </kbd>
         </div>
       </div>
