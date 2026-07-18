@@ -124,8 +124,8 @@ export default function NotificationCenter() {
 
       {/* Dropdown Container */}
       {isOpen && (
-        <div className="absolute right-0 mt-2.5 w-80 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xl z-50 text-slate-800 dark:text-slate-200">
-          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5 mb-2.5">
+        <div className="absolute right-0 mt-2.5 w-80 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-4 shadow-xl z-50 text-slate-850 dark:text-slate-200 backdrop-blur-md animate-fade-in">
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5 mb-2.5 text-left">
             <span className="font-bold text-sm">System Notifications</span>
             <span className="text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded">
               {notifications.length} Alerts

@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import tripService from '../services/tripService';
 import vehicleService from '../services/vehicleService';
 import driverService from '../services/driverService';
 import authService from '../services/authService';
 import DataTable from '../components/DataTable';
 import Loader from '../components/Loader';
-import { Plus, Check, Play, Ban, X } from 'lucide-react';
+import { Plus, Check, Play, Ban, X, AlertTriangle } from 'lucide-react';
+import TripDrawer from '../components/TripDrawer';
+import { useToast } from '../contexts/ToastContext';
 
 export default function Trips() {
   const [trips, setTrips] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  const [toast, setToast] = useState(null);
   const [cancelConfirmId, setCancelConfirmId] = useState(null);
+  const [selectedTrip, setSelectedTrip] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Form states
   const [source, setSource] = useState('');
@@ -26,13 +31,14 @@ export default function Trips() {
   const [plannedDist, setPlannedDist] = useState('');
   const [revenue, setRevenue] = useState('');
 
+  const toast = useToast();
   const currentUser = authService.getCurrentUser();
-  const canDispatch = currentUser && ['Fleet Manager', 'Safety Officer'].includes(currentUser.role);
-  const canComplete = currentUser && ['Fleet Manager', 'Driver'].includes(currentUser.role);
-  const canCreate = currentUser && ['Fleet Manager', 'Safety Officer'].includes(currentUser.role);
-  const canCancel = currentUser && ['Fleet Manager', 'Safety Officer'].includes(currentUser.role);
+  const canCreate = currentUser && ['Fleet Manager', 'Dispatcher'].includes(currentUser.role);
+  const canDispatch = currentUser && ['Fleet Manager', 'Dispatcher'].includes(currentUser.role);
+  const canComplete = currentUser && ['Fleet Manager', 'Dispatcher'].includes(currentUser.role);
+  const canCancel = currentUser && ['Fleet Manager', 'Dispatcher'].includes(currentUser.role);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       const tripData = await tripService.getAll();
@@ -47,10 +53,11 @@ export default function Trips() {
       setDrivers(driverData.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Error fetching trips data.');
+      toast.error('Failed to load active dispatches.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
   useEffect(() => {
     fetchData();
@@ -59,7 +66,7 @@ export default function Trips() {
       setModalOpen(true);
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [fetchData]);
 
   const openAddModal = () => {
     setSource('');
@@ -77,51 +84,100 @@ export default function Trips() {
     e.preventDefault();
     setError('');
 
+    if (!source.trim() || !dest.trim() || !vehicleId || !driverId) {
+      toast.warning('All route fields, vehicle, and driver assignments are required.');
+      return;
+    }
+
+    const distNum = parseFloat(plannedDist);
+    const revNum = parseFloat(revenue);
+    const cargoNum = parseFloat(cargoWeight);
+
+    if (isNaN(distNum) || distNum <= 0) {
+      toast.warning('Planned distance must be a positive number.');
+      return;
+    }
+
+    if (isNaN(revNum) || revNum < 0) {
+      toast.warning('Trip revenue cannot be negative.');
+      return;
+    }
+
+    if (isNaN(cargoNum) || cargoNum <= 0) {
+      toast.warning('Cargo load weight must be a positive number.');
+      return;
+    }
+
+    const selectedVehicle = vehicles.find(v => v.id === parseInt(vehicleId));
+    if (selectedVehicle && cargoNum > parseFloat(selectedVehicle.maxCapacity)) {
+      toast.error(`Blocked: Cargo weight (${cargoNum} kg) exceeds vehicle's maximum payload limit (${selectedVehicle.maxCapacity} kg).`);
+      return;
+    }
+
+    const selectedDriver = drivers.find(d => d.id === parseInt(driverId));
+    if (selectedDriver) {
+      const todayMonth = new Date().toISOString().substring(0, 7);
+      const expiryMonth = selectedDriver.licenseExpiry ? selectedDriver.licenseExpiry.substring(0, 7) : '';
+      if (expiryMonth && expiryMonth < todayMonth) {
+        toast.error(`Blocked: Driver license is expired (${expiryMonth}). Dispatch forbidden.`);
+        return;
+      }
+      if (selectedDriver.state === 'suspended') {
+        toast.error('Blocked: Driver profile is suspended. Dispatch forbidden.');
+        return;
+      }
+    }
+
     const payload = {
-      source,
-      dest,
+      source: source.trim(),
+      dest: dest.trim(),
       vehicleId: parseInt(vehicleId),
       driverId: parseInt(driverId),
-      cargoWeight: parseFloat(cargoWeight),
-      plannedDist: parseFloat(plannedDist),
-      revenue: parseFloat(revenue)
+      cargoWeight: cargoNum,
+      plannedDist: distNum,
+      revenue: revNum
     };
 
     try {
+      setSaving(true);
       await tripService.create(payload);
-      setToast('Trip Booked Successfully');
+      toast.success('Trip Booked Successfully');
       setModalOpen(false);
       fetchData();
-      setTimeout(() => setToast(null), 3000);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to dispatch/save trip.');
+      toast.error(err.response?.data?.message || 'Validation error while booking dispatch.');
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleDispatch = async (id) => {
     try {
       await tripService.dispatch(id);
-      setToast('Trip Dispatched');
+      toast.success('Trip Dispatched successfully!');
       fetchData();
-      setTimeout(() => setToast(null), 3000);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to dispatch trip.');
+      toast.error(err.response?.data?.message || 'Failed to dispatch trip.');
     }
   };
 
   const handleComplete = async (id) => {
     try {
       await tripService.complete(id);
-      setToast('Trip Completed');
+      toast.success('Trip Completed successfully!');
       fetchData();
-      setTimeout(() => setToast(null), 3000);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to complete trip.');
+      toast.error(err.response?.data?.message || 'Failed to complete trip.');
     }
   };
 
   const handleCancel = (id) => {
     setCancelConfirmId(id);
+  };
+
+  const formatCurrency = (val) => {
+    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
   };
 
   const columns = [
@@ -131,19 +187,41 @@ export default function Trips() {
     { header: 'Driver', key: 'driver', render: (row) => <span>{row.Driver?.name}</span> },
     { header: 'Weight (kg)', key: 'cargoWeight' },
     { header: 'Distance (km)', key: 'plannedDist' },
-    { header: 'Revenue', key: 'revenue', render: (row) => <span>₹{parseFloat(row.revenue).toFixed(2)}</span> },
+    { header: 'Revenue', key: 'revenue', render: (row) => <span className="font-bold text-slate-900 dark:text-white">{formatCurrency(row.revenue)}</span> },
+    { 
+      header: 'Telemetry Track', 
+      key: 'track', 
+      render: (row) => {
+        if (row.state === 'cancelled') {
+          return <span className="text-[10px] text-rose-500 font-bold uppercase tracking-wider">Cancelled</span>;
+        }
+        const stateIndex = {
+          draft: 1,
+          dispatched: 2,
+          completed: 3
+        }[row.state] || 1;
+
+        return (
+          <div className="flex items-center gap-1">
+            <span className={`h-1.5 w-5 rounded-full transition-colors ${stateIndex >= 1 ? 'bg-indigo-500' : 'bg-slate-200 dark:bg-slate-800'}`} title="Booked" />
+            <span className={`h-1.5 w-5 rounded-full transition-colors ${stateIndex >= 2 ? (stateIndex === 2 ? 'bg-amber-500 animate-pulse' : 'bg-amber-500') : 'bg-slate-200 dark:bg-slate-800'}`} title="In Transit" />
+            <span className={`h-1.5 w-5 rounded-full transition-colors ${stateIndex >= 3 ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-800'}`} title="Completed" />
+          </div>
+        );
+      }
+    },
     { 
       header: 'Status', 
       key: 'state', 
       render: (row) => {
         const statusColors = {
           draft: 'bg-slate-100 dark:bg-slate-850 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700/30',
-          dispatched: 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/30',
-          completed: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/30',
-          cancelled: 'bg-red-50 dark:bg-red-950/40 text-red-650 dark:text-red-400 border-red-200 dark:border-red-900/30'
+          dispatched: 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-450 border-amber-250 dark:border-amber-900/30',
+          completed: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-250 dark:border-emerald-900/30',
+          cancelled: 'bg-red-50 dark:bg-red-950/40 text-red-655 dark:text-red-400 border-red-250 dark:border-red-900/30'
         };
         return (
-          <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-md border ${statusColors[row.state] || 'bg-slate-100 dark:bg-slate-850'}`}>
+          <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-md border ${statusColors[row.state] || 'bg-slate-105'}`}>
             {row.state}
           </span>
         );
@@ -203,7 +281,26 @@ export default function Trips() {
       </div>
 
       {/* Grid Table */}
-      <DataTable columns={columns} data={trips} loading={loading} emptyText="No trips dispatched yet." />
+      <DataTable 
+        columns={columns} 
+        data={trips} 
+        loading={loading} 
+        emptyText="No trips dispatched yet." 
+        onRowClick={(row) => {
+          setSelectedTrip(row);
+          setDrawerOpen(true);
+        }}
+      />
+
+      {/* Trip Details Drawer */}
+      <TripDrawer 
+        trip={selectedTrip} 
+        isOpen={drawerOpen} 
+        onClose={() => {
+          setDrawerOpen(false);
+          setSelectedTrip(null);
+        }} 
+      />
 
       {/* Modal Dialog Form */}
       {modalOpen && (
@@ -280,7 +377,11 @@ export default function Trips() {
                   >
                     <option value="">-- Select Available Driver --</option>
                     {drivers
-                      .filter(d => d.state === 'available')
+                      .filter(d => {
+                        const todayMonth = new Date().toISOString().substring(0, 7);
+                        const expiryMonth = d.licenseExpiry ? d.licenseExpiry.substring(0, 7) : '';
+                        return d.state === 'available' && expiryMonth >= todayMonth;
+                      })
                       .map(d => (
                         <option key={d.id} value={d.id}>
                           {d.name} (Score: {d.safetyScore}/100)
@@ -336,53 +437,55 @@ export default function Trips() {
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-all"
+                  disabled={saving}
+                  className="rounded-xl bg-indigo-650 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-all flex items-center gap-1.5"
                 >
+                  {saving && <div className="h-3 w-3 animate-spin rounded-full border border-white border-t-transparent" />}
                   Confirm &amp; Book
                 </button>
               </div>
             </form>
           </div>
         </div>
-      )}
-
-      {cancelConfirmId && (
+      )}      {cancelConfirmId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
           <div className="w-full max-w-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xl animate-scale-up text-left">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Cancel Trip?</h3>
-            <p className="text-xs text-slate-500 mb-6">Are you sure you want to cancel this scheduled trip dispatch? This will release the assigned driver and vehicle.</p>
+            <div className="h-10 w-10 bg-rose-50 dark:bg-rose-955/20 text-rose-600 dark:text-rose-455 rounded-full flex items-center justify-center mb-4">
+              <AlertTriangle className="h-5 w-5" />
+            </div>
+            <h3 className="text-base font-black text-slate-900 dark:text-white mb-2">Cancel Dispatch Trip?</h3>
+            <p className="text-xs text-slate-505 mb-6 leading-relaxed">
+              Are you sure you want to cancel this scheduled trip dispatch? This will release the assigned driver and vehicle assets.
+            </p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setCancelConfirmId(null)}
-                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-650 dark:text-slate-355 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-650 dark:text-slate-350 hover:bg-slate-55 dark:hover:bg-slate-800 transition-colors"
               >
-                Cancel
+                Go Back
               </button>
               <button
                 onClick={async () => {
                   try {
+                    setCancelling(true);
                     await tripService.cancel(cancelConfirmId);
                     setCancelConfirmId(null);
                     fetchData();
-                    setToast('Trip Cancelled Successfully');
-                    setTimeout(() => setToast(null), 3000);
+                    toast.success('Trip Cancelled Successfully');
                   } catch (err) {
-                    alert(err.response?.data?.message || 'Failed to cancel trip.');
+                    toast.error(err.response?.data?.message || 'Failed to cancel trip.');
+                  } finally {
+                    setCancelling(false);
                   }
                 }}
-                className="px-4 py-2 rounded-xl bg-red-650 hover:bg-red-500 text-xs font-semibold text-white shadow-md transition-colors"
+                disabled={cancelling}
+                className="px-4 py-2 rounded-xl bg-red-650 hover:bg-red-500 text-xs font-bold text-white shadow-md transition-colors flex items-center gap-1.5"
               >
+                {cancelling && <div className="h-3 w-3 animate-spin rounded-full border border-white border-t-transparent" />}
                 Cancel Trip
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {toast && (
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl border border-emerald-250 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/80 p-4 text-xs font-semibold text-emerald-600 dark:text-emerald-400 shadow-lg backdrop-blur-md animate-slide-in">
-          <span>✅</span>
-          <span>{toast}</span>
         </div>
       )}
     </div>

@@ -82,6 +82,18 @@ export default function GlobalSearch() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
+  // Global Ctrl+K / Cmd+K listener
+  useEffect(() => {
+    const handleGlobalK = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalK);
+    return () => window.removeEventListener('keydown', handleGlobalK);
+  }, []);
+
   // Navigate to target page and focus element
   const handleSelect = (path) => {
     setIsOpen(false);

@@ -1,75 +1,101 @@
-# TransitOps - Centralized Transport and Fleet Operations Platform
+# TransitOps — Smart Enterprise Transport Operations Platform
 
-TransitOps is a centralized fleet operations web dashboard. It manages vehicles, driver files, trip dispatching, maintenance logs, and fuel/expense tracking with strict safety constraints and real-time Return on Investment (ROI) analytics.
+TransitOps is a premium enterprise-grade commercial fleet management and analytics platform (inspired by Samsara and Fleetio). It provides dispatcher control dashboards, visual telemetry progress trackers, interactive asset sliding detail drawers, database-linked business rule safety gates, and automated financial auditing ledgers.
 
-## 🚀 Tech Stack
+## Key Features
 
-- **Frontend**: React.js + Vite + Tailwind CSS
-- **Backend**: Node.js + Express.js + Sequelize ORM
-- **Database**: MySQL
-- **Charts**: Recharts
-- **Authentication**: JSON Web Tokens (JWT) + bcryptjs
+1. **Dashboard Command Center**: Real-time KPI widgets, animated circular gauges for operational availability, interactive scheduling feeds, and segment-tabbed Recharts trends.
+2. **Interactive Sliding Drawers**: Slide-left panels detail profiles, financial area charts, license verification grids, safety score trends, and GPS dispatches.
+3. **Dispatcher Route Safety Gates**: Enforces business constraints checking cargo capacity overload, suspended operators, and license expirations before dispatch.
+4. **Maintenance Lockouts**: Locking open repair logs triggers state updates, securing vehicle assets in-shop and blocking dispatches.
+5. **Printable Audit Dossier**: Clean PDF styling with stamp boxes, signature lines, compliance badges, and localized currency grids.
+6. **Global Search Cmd palette**: Quick `⌘K` / `Ctrl+K` key commands slide open search overlaying all databases.
+7. **AI Fleet Copilot**: Interactive assistant bubble responding to queries matching dashboard telemetry indexes.
+8. **Performance Optimizations**: React lazy routing, page-row skeletons, and database cascading structures.
 
----
+## Technology Stack
 
-## 🛠️ Installation & Setup
+- **Frontend**: React 18, React Router v6, Tailwind CSS, Lucide React, Recharts, Axios.
+- **Backend**: Node.js, Express, Sequelize ORM, JWT Authentication.
+- **Database**: SQLite3.
+- **Tools**: Vite, PostCSS.
 
-### 1. Database Setup
-1. Open your MySQL client (e.g. MySQL Command Line Client or WorkBench).
-2. Import the schema and seed data located at `database/schema.sql`:
-   ```sql
-   SOURCE database/schema.sql;
-   ```
-   *This creates a database named `transitops_db` and seeds users for test log-ins.*
+## Architecture Topology
 
-### 2. Configure Environment `.env`
-Create a `.env` file in the project root directory (pre-configured variables are already set up).
-```env
-PORT=5000
-NODE_ENV=development
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASS=your_mysql_password_here
-DB_NAME=transitops_db
-JWT_SECRET=transitops_super_secret_jwt_key_2026
-JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:5173
+```
+[React SPA Client] ◄─── API Queries ───► [Express Node API Server] ◄─── Sequelize ORM ───► [SQLite File]
 ```
 
-### 3. Start Backend Server
-1. Navigate to the `server` directory.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Run the development server:
-   ```bash
-   npm run dev
-   ```
-   *The server starts listening on `http://localhost:5000` and synchronizes ORM tables.*
+Detailed architecture diagrams are compiled at [docs/architecture.md](docs/architecture.md).
 
-### 4. Start Frontend Client
-1. Navigate to the `client` directory.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Run the development client:
-   ```bash
-   npm run dev
-   ```
-   *The client opens at `http://localhost:5173` with full API proxying.*
+## Folder Structure
+
+```
+transitops_core/
+├── client/                 # React Single Page Application
+│   ├── src/
+│   │   ├── components/     # UI components (Drawers, Maps, Chatbots)
+│   │   ├── contexts/       # Global contexts (Toast system)
+│   │   ├── layouts/        # Layout wrappers (Dashboard wrapper)
+│   │   ├── pages/          # Page views (Dashboard, Vehicles, Trips)
+│   │   └── services/       # Axios API client requests
+├── server/                 # Express backend API service
+│   ├── config/             # DB initialization and keys
+│   ├── controllers/        # Express route request handlers
+│   ├── database/           # SQLite database file
+│   ├── middleware/         # Auth protector middlewares
+│   └── models/             # Sequelize database models
+└── docs/                   # System design specifications
+```
+
+## Database Schema Relations
+
+Entity Relationship Models and schema keys details are documented at [docs/database-schema.md](docs/database-schema.md).
+
+## REST API Specification
+
+A list of all endpoints, parameters, and payloads is hosted at [docs/api-documentation.md](docs/api-documentation.md).
+
+## Dispatch Workflow Checklists
+
+Step-by-step dispatch compliance checklists are mapped at [docs/workflow.md](docs/workflow.md).
+
+## Installation & Guide
+
+### Prerequisites
+- Node.js (v18+)
+- npm
+
+### 1. Backend Service Setup
+```bash
+cd server
+npm install
+npm run seed     # seed database
+npm start        # run server (port 5000)
+```
+
+### 2. Frontend Client Setup
+```bash
+cd client
+npm install
+npm run dev      # start dev client (port 5173)
+```
+
+## Environment Configs
+
+### Backend config (`server/.env`)
+```env
+PORT=5000
+JWT_SECRET=transitops_super_secret_key_12345
+```
+
+## Demonstration Credentials
+
+- **Fleet Administrator**: `manager` / `password123`
+- **Safety Officer**: `safety` / `password123`
+- **Financial Analyst**: `financial` / `password123`
 
 ---
 
-## 🔑 Hackathon Demo Logins
-
-All test user passwords are: **`password123`**
-
-| Role | Username | Permissions |
-| :--- | :--- | :--- |
-| **Fleet Manager** | `manager` | Full access to add/edit/delete all records and dispatch/complete trips. |
-| **Safety Officer** | `safety` | Create/edit drivers and maintenance logs. Create/dispatch/cancel trips. |
-| **Financial Analyst** | `analyst` | Create/edit vehicles, log fuel/tolls expenses, and audit financial reports. |
-| **Driver** | `driver1` | Read access to assigned resources and ability to mark assigned trips as Completed. |
+### License
+Distributed under the MIT License. See `LICENSE` file.

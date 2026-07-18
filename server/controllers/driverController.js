@@ -1,8 +1,16 @@
-const { Driver, Trip } = require('../models');
+const { Driver, Trip, Vehicle } = require('../models');
 
 exports.getAllDrivers = async (req, res, next) => {
   try {
-    const drivers = await Driver.findAll();
+    const drivers = await Driver.findAll({
+      include: [
+        {
+          model: Trip,
+          as: 'Trips',
+          include: [{ model: Vehicle, as: 'Vehicle' }]
+        }
+      ]
+    });
     res.status(200).json({ success: true, data: drivers });
   } catch (error) {
     next(error);
@@ -11,7 +19,15 @@ exports.getAllDrivers = async (req, res, next) => {
 
 exports.getDriverById = async (req, res, next) => {
   try {
-    const driver = await Driver.findByPk(req.params.id);
+    const driver = await Driver.findByPk(req.params.id, {
+      include: [
+        {
+          model: Trip,
+          as: 'Trips',
+          include: [{ model: Vehicle, as: 'Vehicle' }]
+        }
+      ]
+    });
     if (!driver) {
       return res.status(404).json({ success: false, message: 'Driver not found.' });
     }

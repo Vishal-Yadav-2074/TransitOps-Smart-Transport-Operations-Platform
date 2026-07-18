@@ -34,7 +34,11 @@ exports.getDashboardStats = async (req, res, next) => {
         createdAt: {
           [Op.between]: [startOfDay, endOfDay]
         }
-      }
+      },
+      include: [
+        { model: Vehicle, as: 'Vehicle', attributes: ['id', 'name', 'registrationNo'] },
+        { model: Driver, as: 'Driver', attributes: ['id', 'name'] }
+      ]
     });
     const revenueToday = tripsToday.reduce((acc, t) => acc + parseFloat(t.revenue || 0), 0);
 
@@ -49,6 +53,26 @@ exports.getDashboardStats = async (req, res, next) => {
       }
     });
     const fuelCostToday = fuelExpensesToday.reduce((acc, e) => acc + parseFloat(e.amount || 0), 0);
+
+    // Other expenses today
+    const otherExpensesToday = await Expense.findAll({
+      where: {
+        expenseType: { [Op.ne]: 'fuel' },
+        date: todayStr
+      }
+    });
+    const otherExpensesTodayCost = otherExpensesToday.reduce((acc, e) => acc + parseFloat(e.amount || 0), 0);
+
+    // Maintenance cost logged today
+    const maintenanceToday = await Maintenance.findAll({
+      where: {
+        date: todayStr
+      }
+    });
+    const maintenanceTodayCost = maintenanceToday.reduce((acc, m) => acc + parseFloat(m.cost || 0), 0);
+
+    const totalExpensesToday = fuelCostToday + otherExpensesTodayCost + maintenanceTodayCost;
+    const profitToday = revenueToday - totalExpensesToday;
 
     // Expiring licenses within 30 days
     const driversListAll = await Driver.findAll();
@@ -111,7 +135,7 @@ exports.getDashboardStats = async (req, res, next) => {
     // Helper to initialize month
     const initMonth = (mStr) => {
       if (!monthsMap[mStr]) {
-        monthsMap[mStr] = { month: mStr, revenue: 0, fuel: 0, maintenance: 0, totalExpense: 0 };
+        monthsMap[mStr] = { month: mStr, revenue: 0, fuel: 0, maintenance: 0, totalExpense: 0, tripsCount: 0 };
       }
     };
 
@@ -121,6 +145,7 @@ exports.getDashboardStats = async (req, res, next) => {
         const monthStr = dateObj.toISOString().substring(0, 7); // 'YYYY-MM'
         initMonth(monthStr);
         monthsMap[monthStr].revenue += parseFloat(t.revenue || 0);
+        monthsMap[monthStr].tripsCount += 1;
       }
     });
 
@@ -179,6 +204,89 @@ exports.getDashboardStats = async (req, res, next) => {
       .sort((a, b) => b.roi - a.roi)
       .slice(0, 5);
 
+    // Gather Recent Activities for live dispatch log
+    const recentVehicles = await Vehicle.findAll({ order: [['createdAt', 'DESC']], limit: 5 });
+    const recentDrivers = await Driver.findAll({ order: [['createdAt', 'DESC']], limit: 5 });
+    const recentTrips = await Trip.findAll({ order: [['updatedAt', 'DESC']], limit: 10 });
+    const recentExpenses = await Expense.findAll({ order: [['createdAt', 'DESC']], limit: 10 });
+    const recentMaintenances = await Maintenance.findAll({ order: [['updatedAt', 'DESC']], limit: 10 });
+
+    const activities = [];
+
+    recentVehicles.forEach(v => {
+      activities.push({
+        text: `Vehicle Added: ${v.name} (${v.registrationNo})`,
+        timestamp: v.createdAt,
+        type: 'vehicle',
+        color: 'bg-indigo-500 text-white'
+      });
+    });
+
+    recentDrivers.forEach(d => {
+      activities.push({
+        text: `Driver Added: ${d.name}`,
+        timestamp: d.createdAt,
+        type: 'driver',
+        color: 'bg-emerald-500 text-white'
+      });
+    });
+
+    recentTrips.forEach(t => {
+      let text = '';
+      if (t.state === 'draft') text = `Trip Booked: ${t.name} (${t.source} ➔ ${t.dest})`;
+      else if (t.state === 'dispatched') text = `Trip Dispatched: ${t.name} (${t.source} ➔ ${t.dest})`;
+      else if (t.state === 'completed') text = `Trip Completed: ${t.name} (${t.source} ➔ ${t.dest})`;
+      else if (t.state === 'cancelled') text = `Trip Cancelled: ${t.name}`;
+      
+      activities.push({
+        text,
+        timestamp: t.updatedAt,
+        type: 'trip',
+        color: t.state === 'completed' ? 'bg-emerald-600 text-white' : t.state === 'dispatched' ? 'bg-amber-500 text-white' : 'bg-slate-500 text-white'
+      });
+    });
+
+    recentExpenses.forEach(e => {
+      activities.push({
+        text: `${e.expenseType.charAt(0).toUpperCase() + e.expenseType.slice(1)} Expense Added: ₹${parseFloat(e.amount).toLocaleString('en-IN')} (${e.name})`,
+        timestamp: e.createdAt,
+        type: 'expense',
+        color: 'bg-amber-600 text-white'
+      });
+    });
+
+    recentMaintenances.forEach(m => {
+      let text = '';
+      if (m.state === 'open') text = `Maintenance Started: ${m.name}`;
+      else text = `Maintenance Closed: ${m.name}`;
+      
+      activities.push({
+        text,
+        timestamp: m.updatedAt,
+        type: 'maintenance',
+        color: m.state === 'open' ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'
+      });
+    });
+
+    activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const sortedActivities = activities.slice(0, 15).map(act => {
+      const d = new Date(act.timestamp);
+      let timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const todayDateStr = new Date().toDateString();
+      if (d.toDateString() !== todayDateStr) {
+        timeStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' ' + timeStr;
+      }
+      return {
+        time: timeStr,
+        text: act.text,
+        type: act.type,
+        color: act.color,
+        timestamp: act.timestamp
+      };
+    });
+
+    const vehiclesInMaintenanceList = vehiclesList.filter(v => v.state === 'in_shop');
+
     res.status(200).json({
       success: true,
       data: {
@@ -200,7 +308,8 @@ exports.getDashboardStats = async (req, res, next) => {
           netProfit,
           overallRoi,
           fuelCostToday,
-          revenueToday
+          revenueToday,
+          profitToday
         },
         expenseBreakdown: {
           maintenance: totalMaintenance,
@@ -211,7 +320,11 @@ exports.getDashboardStats = async (req, res, next) => {
         tripStatusDistribution,
         vehicleUtilization,
         monthlyFinancials,
-        leaderboard
+        leaderboard,
+        activities: sortedActivities,
+        tripsTodayList: tripsToday,
+        expiringDriversList: expiringDrivers,
+        vehiclesInMaintenanceList: vehiclesInMaintenanceList
       }
     });
   } catch (error) {

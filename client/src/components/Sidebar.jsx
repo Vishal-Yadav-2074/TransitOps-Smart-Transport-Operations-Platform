@@ -7,7 +7,9 @@ import {
   Milestone, 
   Wrench, 
   Fuel, 
-  FilePieChart, 
+  FilePieChart,
+  Calendar,
+  Settings,
   X 
 } from 'lucide-react';
 
@@ -20,6 +22,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     { name: 'Maintenance', path: '/maintenance', icon: Wrench },
     { name: 'Expenses', path: '/expenses', icon: Fuel },
     { name: 'Reports', path: '/reports', icon: FilePieChart },
+    { name: 'Calendar', path: '/calendar', icon: Calendar },
+    { name: 'Settings', path: '/settings', icon: Settings },
   ];
 
   return (

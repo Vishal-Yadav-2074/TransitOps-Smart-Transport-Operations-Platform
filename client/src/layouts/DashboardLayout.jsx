@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import AIFleetAssistant from '../components/AIFleetAssistant';
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans">
+    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-955 text-slate-800 dark:text-slate-100 font-sans">
       {/* Sidebar Navigation */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
@@ -21,6 +22,9 @@ export default function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Floating AI Fleet Assistant Chatbot */}
+      <AIFleetAssistant />
     </div>
   );
 }
