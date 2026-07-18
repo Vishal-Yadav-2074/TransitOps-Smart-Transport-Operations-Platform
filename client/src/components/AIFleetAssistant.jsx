@@ -103,10 +103,10 @@ export default function AIFleetAssistant() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="h-14 w-14 rounded-full bg-brand-600 hover:bg-brand-500 text-white flex items-center justify-center shadow-xl hover:shadow-brand-500/30 hover:scale-105 active:scale-95 transition-all duration-300 relative border border-brand-400/30 group"
+          className="h-14 w-14 rounded-full bg-gradient-to-tr from-[#7C3AED] to-[#8B5CF6] text-white flex items-center justify-center shadow-xl hover:shadow-[#7C3AED]/35 hover:scale-105 active:scale-95 transition-all duration-300 relative border border-brand-400/20 group"
           title="Ask Fleet Assistant"
         >
-          <Bot className="h-6 w-6 animate-pulse-subtle" />
+          <Bot className="h-6 w-6 animate-pulse" />
           <span className="absolute -top-1 -right-1 flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
@@ -116,11 +116,11 @@ export default function AIFleetAssistant() {
 
       {/* Floating Chat Box */}
       {isOpen && (
-        <div className="w-80 h-96 bg-white dark:bg-slate-900 border border-slate-205 dark:border-slate-800 rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden animate-slide-up text-left text-slate-850 dark:text-slate-200">
+        <div className="w-85 h-[410px] bg-white/90 dark:bg-[#131722]/90 border border-slate-205 dark:border-white/5 backdrop-blur-xl rounded-[24px] shadow-2xl flex flex-col justify-between overflow-hidden animate-slide-up text-left text-slate-850 dark:text-slate-200">
           {/* Header */}
-          <div className="bg-gradient-to-r from-brand-600 to-indigo-650 p-4 text-white flex items-center justify-between shadow-md">
+          <div className="bg-gradient-to-r from-[#7C3AED] to-[#8B5CF6] p-4.5 text-white flex items-center justify-between shadow-md">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-amber-300 animate-pulse" />
+              <Sparkles className="h-4.5 w-4.5 text-amber-300 animate-pulse" />
               <div>
                 <span className="font-extrabold text-sm block">TransitOps AI Copilot</span>
                 <span className="text-[9px] font-bold text-brand-200 uppercase tracking-wider block">Live Telemetry Linked</span>
@@ -135,7 +135,7 @@ export default function AIFleetAssistant() {
           </div>
 
           {/* Messages list */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar bg-slate-50/50 dark:bg-slate-950/20">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scrollbar bg-slate-50/50 dark:bg-slate-950/10">
             {messages.map(msg => (
               <div 
                 key={msg.id} 
@@ -143,16 +143,16 @@ export default function AIFleetAssistant() {
               >
                 <div className={`p-1.5 rounded-lg border ${
                   msg.sender === 'user' 
-                    ? 'bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-950/40 dark:border-indigo-900/30' 
-                    : 'bg-white border-slate-150 text-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200'
+                    ? 'bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-955/20 dark:border-indigo-900/35' 
+                    : 'bg-white border-slate-150 text-slate-800 dark:bg-[#181D28]/45 dark:border-white/5 dark:text-slate-200'
                 }`}>
                   {msg.sender === 'user' ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5 text-brand-500" />}
                 </div>
                 
                 <div className={`p-3 rounded-2xl text-xs max-w-[75%] leading-relaxed ${
                   msg.sender === 'user'
-                    ? 'bg-brand-600 text-white rounded-tr-none text-right font-medium'
-                    : 'bg-white dark:bg-slate-850 border border-slate-200/50 dark:border-slate-800 rounded-tl-none font-semibold'
+                    ? 'bg-brand-500 text-white rounded-tr-none text-right font-medium'
+                    : 'bg-white dark:bg-[#181D28] border border-slate-200/50 dark:border-white/5 rounded-tl-none font-semibold'
                 }`}>
                   {msg.text}
                 </div>
@@ -162,18 +162,19 @@ export default function AIFleetAssistant() {
           </div>
 
           {/* Quick templates */}
-          <div className="px-3 py-1.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/10 flex flex-wrap gap-1.5 shrink-0">
+          <div className="px-3 py-2 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-955/15 flex flex-wrap gap-1.5 shrink-0">
             {[
-              { label: '📊 Profit Today', query: 'what is our profit today?' },
-              { label: '⚠️ Alerts', query: 'show compliance alerts' },
-              { label: '🔧 Lockouts', query: 'which vehicles are locked in maintenance?' },
-              { label: '💡 Utilization', query: 'what is our fleet utilization?' }
+              { label: '📊 Revenue', query: 'what is our revenue today?' },
+              { label: '🔥 Fuel Usage', query: 'what is our fuel cost today?' },
+              { label: '🚚 Top Vehicle', query: 'which vehicle is performing best?' },
+              { label: '🔧 Maintenance', query: 'which vehicles are locked in maintenance?' },
+              { label: '🛣️ Trips', query: 'how many trips were completed today?' }
             ].map(pill => (
               <button
                 key={pill.label}
                 type="button"
                 onClick={() => triggerSuggestion(pill.query)}
-                className="text-[9px] font-bold px-2 py-0.5 rounded-full border border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-550 dark:text-slate-400 hover:border-brand-500 hover:text-brand-600 transition-colors"
+                className="text-[9px] font-bold px-2.5 py-1 rounded-full border border-slate-205 dark:border-white/5 bg-white dark:bg-[#131722] text-slate-550 dark:text-slate-400 hover:border-brand-500 hover:text-brand-500 transition-colors shadow-sm"
               >
                 {pill.label}
               </button>
@@ -181,13 +182,13 @@ export default function AIFleetAssistant() {
           </div>
 
           {/* Input form */}
-          <form onSubmit={handleSend} className="p-3 border-t border-slate-200 dark:border-slate-800 flex gap-2 bg-white dark:bg-slate-900">
+          <form onSubmit={handleSend} className="p-3 border-t border-slate-200 dark:border-white/5 flex gap-2 bg-white dark:bg-[#10131a]">
             <input
               type="text"
-              placeholder="Ask about profit, compliance, health..."
+              placeholder="Ask anything about your fleet..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 px-3.5 py-2 border border-slate-200/80 dark:border-slate-850 rounded-xl bg-slate-50 dark:bg-slate-950 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:border-brand-500 focus:outline-none"
+              className="flex-1 px-3.5 py-2 border border-slate-200/80 dark:border-white/5 rounded-xl bg-slate-50 dark:bg-[#131722] text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-550 focus:border-brand-500 focus:outline-none"
             />
             <button
               type="submit"
