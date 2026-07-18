@@ -712,19 +712,21 @@ export default function Dashboard() {
                     </div>
                   ) : (
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={stats.monthlyFinancials} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id="colorFuel" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.2}/>
-                            <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
-                          </linearGradient>
-                        </defs>
+                      <LineChart data={stats.monthlyFinancials} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} />
                         <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
                         <Tooltip formatter={(value) => formatCurrency(value)} />
                         <Legend />
-                        <Area type="monotone" dataKey="fuel" name="Fuel Expenses" stroke="#f59e0b" fillOpacity={1} fill="url(#colorFuel)" />
-                      </AreaChart>
+                        <Line 
+                          type="monotone" 
+                          dataKey="fuel" 
+                          name="Fuel Expenses" 
+                          stroke="#EF4444" 
+                          strokeWidth={3} 
+                          dot={{ r: 4, strokeWidth: 1.5, fill: "#09090b" }} 
+                          activeDot={{ r: 6 }} 
+                        />
+                      </LineChart>
                     </ResponsiveContainer>
                   )}
                 </div>
