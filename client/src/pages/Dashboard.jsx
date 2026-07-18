@@ -166,7 +166,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* KPI Cards Grid (9 Cards) */}
+      <div className="grid gap-6 lg:grid-cols-4 items-start">
+        {/* Main Content Area (3 columns) */}
+        <div className="lg:col-span-3 space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <DashboardCard 
           title="Today's Trips"
@@ -927,6 +929,14 @@ export default function Dashboard() {
 
         </div>
       </div>
+      
+        </div> {/* close lg:col-span-3 */}
+
+        {/* Alerts Sidebar Panel (1 column) */}
+        <div className="lg:col-span-1 lg:sticky lg:top-24">
+          <AlertsPanel stats={stats} />
+        </div>
+      </div> {/* close grid lg:grid-cols-4 */}
       
     </div>
   );
