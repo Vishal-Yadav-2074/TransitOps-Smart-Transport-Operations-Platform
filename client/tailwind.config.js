@@ -21,8 +21,23 @@ export default {
           900: '#1e1b4b',
         },
         slate: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          150: '#e2e8f0',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          450: '#64748b',
+          500: '#64748b',
+          505: '#64748b',
+          600: '#475569',
+          650: '#334155',
+          700: '#334155',
+          800: '#1d1b38', // Glowing dark violet border
           850: '#1e293b',
-          950: '#0f172a'
+          900: '#131224', // Card panel dark background
+          950: '#0b0a12', // Main canvas background
+          955: '#0b0a12',
         }
       },
       fontFamily: {

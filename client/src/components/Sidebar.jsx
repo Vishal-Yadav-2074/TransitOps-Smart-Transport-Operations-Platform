@@ -71,8 +71,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 className={({ isActive }) =>
                   `flex items-center gap-3.5 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
                     isActive
-                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-800 text-white shadow-md shadow-indigo-650/30 font-bold border-l-2 border-indigo-400'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-105 dark:hover:bg-slate-800/40'
                   }`
                 }
               >
