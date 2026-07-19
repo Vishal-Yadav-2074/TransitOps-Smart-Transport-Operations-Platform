@@ -8,6 +8,7 @@ server/node_modules/
 
 # SQLite databases
 server/*.sqlite
+server/database/*.sqlite
 server/database.sqlite
 database/*.sqlite
 

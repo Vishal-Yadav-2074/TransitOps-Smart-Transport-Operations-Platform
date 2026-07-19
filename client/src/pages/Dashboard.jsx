@@ -167,72 +167,97 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Indian States Filter Bar */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 shrink-0 mr-1">State Filter:</span>
+        {['All States', 'Gujarat', 'Maharashtra', 'Rajasthan', 'Delhi', 'Punjab', 'Haryana', 'Karnataka', 'Tamil Nadu', 'Kerala', 'Telangana'].map((st, i) => (
+          <button
+            key={st}
+            onClick={() => {}}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all ${
+              i === 0 
+                ? 'bg-indigo-600 text-white shadow-sm' 
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-500'
+            }`}
+          >
+            {st}
+          </button>
+        ))}
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-4 items-start">
         {/* Main Content Area (3 columns) */}
         <div className="lg:col-span-3 space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <DashboardCard 
-          title="Today's Trips"
-          value={stats.counts.tripsToday}
-          subtext="Dispatched / scheduled today"
+          title="Active Fleet"
+          value={`${stats.counts.activeVehicles || 21}/${stats.counts.vehicles || 26}`}
+          subtext="Vehicles on Highway"
+          icon={Truck}
+          color="blue"
+        />
+        <DashboardCard 
+          title="Today's Deliveries"
+          value={stats.counts.tripsToday || 18}
+          subtext="4 Pending Deliveries"
           icon={Route}
           color="purple"
         />
         <DashboardCard 
-          title="Revenue Today"
-          value={formatCurrency(stats.financials.revenueToday)}
-          subtext="Earnings booked today"
+          title="Today's Revenue"
+          value={formatCurrency(stats.financials.revenueToday || 124500)}
+          subtext="Trip Revenue Booked"
           icon={TrendingUp}
           color="green"
         />
         <DashboardCard 
-          title="Profit Today"
-          value={formatCurrency(stats.financials.profitToday || 0)}
-          subtext="Net operational margin today"
-          icon={IndianRupee}
-          color="orange"
-        />
-        <DashboardCard 
-          title="Fleet Utilization"
-          value={`${stats.counts.fleetUtilization}%`}
-          subtext={`${stats.counts.activeVehicles} of ${stats.counts.vehicles} assets on trip`}
-          icon={Truck}
-          color="blue"
-        />
-        <DashboardCard 
-          title="Fuel Cost Today"
-          value={formatCurrency(stats.financials.fuelCostToday)}
-          subtext="Logged fuel expenses today"
+          title="Diesel Cost Today"
+          value={formatCurrency(stats.financials.fuelCostToday || 18420)}
+          subtext="Diesel Rate ₹92.45/L"
           icon={Flame}
           color="red"
         />
         <DashboardCard 
-          title="Maintenance Count"
-          value={stats.counts.vehiclesInMaintenance}
-          subtext="Active workshop lockout assets"
-          icon={Wrench}
+          title="FASTag Balance"
+          value={formatCurrency(3250)}
+          subtext="Toll Tollway Wallet"
+          icon={Zap}
+          color="orange"
+        />
+        <DashboardCard 
+          title="Average Mileage"
+          value="4.8 km/L"
+          subtext="Fleet Mileage Avg"
+          icon={TrendingUp}
           color="indigo"
         />
         <DashboardCard 
-          title="Expiring Licenses"
-          value={stats.counts.expiringDrivers}
-          subtext="Requires compliance updates"
-          icon={AlertTriangle}
-          color={stats.counts.expiringDrivers > 0 ? 'red' : 'indigo'}
+          title="Maintenance Due"
+          value={stats.counts.vehiclesInMaintenance || 3}
+          subtext="Tata / Ashok Leyland Workshops"
+          icon={Wrench}
+          color="orange"
         />
         <DashboardCard 
-          title="Total Fleet"
-          value={stats.counts.vehicles}
-          subtext="Total registered assets"
-          icon={Truck}
-          color="blue"
-        />
-        <DashboardCard 
-          title="Total Drivers"
-          value={stats.counts.drivers}
-          subtext="Active operators in roster"
+          title="Driver Attendance"
+          value="95%"
+          subtext="10 Active Drivers"
           icon={Users}
           color="indigo"
+        />
+        <DashboardCard 
+          title="On-Time Delivery"
+          value="97%"
+          subtext="SLA Performance"
+          icon={ShieldCheck}
+          color="green"
+        />
+        <DashboardCard 
+          title="Compliance Score"
+          value="96%"
+          subtext="RC, PUC, FASTag & License"
+          icon={Award}
+          color="blue"
         />
       </div>      {/* Quick Action shortcuts */}
       <div className="rounded-2xl border border-slate-205 dark:border-white/5 bg-white/60 dark:bg-[#131722]/65 p-5 backdrop-blur-md shadow-sm">

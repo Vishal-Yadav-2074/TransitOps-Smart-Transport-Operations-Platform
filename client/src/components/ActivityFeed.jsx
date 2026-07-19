@@ -18,25 +18,25 @@ export default function ActivityFeed({ activities }) {
   const defaultMockActivities = [
     {
       time: '10:15 AM',
-      text: "Vehicle GJ01AB1234 Added",
+      text: "Ashok Leyland 2820 (GJ-01-AB-4587) Dispatched to Surat Hub",
       type: 'vehicle',
       color: 'bg-indigo-500 text-white'
     },
     {
       time: '10:40 AM',
-      text: "Trip TRIP/005 Dispatched",
+      text: "Trip TRIP/2026/001 (Ahmedabad ➔ Surat) Dispatched",
       type: 'trip',
       color: 'bg-amber-500 text-white'
     },
     {
       time: '11:05 AM',
-      text: "Fuel Expense ₹1,200 Added",
+      text: "Diesel Refill ₹18,420 Added @ ₹92.45/L (IOCL Hub)",
       type: 'expense',
       color: 'bg-amber-600 text-white'
     },
     {
       time: '11:20 AM',
-      text: "Maintenance Started",
+      text: "Tata Service Center Engine Maintenance Started",
       type: 'maintenance',
       color: 'bg-rose-500 text-white'
     }

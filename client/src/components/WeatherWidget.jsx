@@ -50,15 +50,16 @@ export default function WeatherWidget() {
     <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 backdrop-blur-md flex items-center justify-between shadow-sm">
       <div className="space-y-1">
         <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Regional Hub Status</span>
-        <h4 className="text-sm font-bold text-slate-900 dark:text-white">Ahmedabad HQ</h4>
-        <p className="text-[11px] text-slate-500 dark:text-slate-400">{weather.condition}</p>
+        <h4 className="text-sm font-extrabold text-slate-900 dark:text-white">Ahmedabad Logistics Hub</h4>
+        <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{weather.condition} • Humidity 58%</p>
+        <span className="inline-block text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">AQI 94 (Moderate)</span>
       </div>
 
       <div className="flex items-center gap-3">
         {getWeatherIcon(weather.code)}
         <div className="text-right">
-          <span className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{weather.temp}°C</span>
-          <span className="block text-[8px] font-semibold text-emerald-600 dark:text-emerald-450 uppercase tracking-widest mt-0.5">Live Feed</span>
+          <span className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{weather.temp || 37}°C</span>
+          <span className="block text-[8px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-0.5">Gujarat Hub Live</span>
         </div>
       </div>
     </div>

@@ -67,31 +67,37 @@ export default function Login() {
         <div className="md:col-span-7 text-left space-y-6">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-bold">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>AI-Powered Telemetry Roster Linked</span>
+            <span>Made for Indian Logistics • GST &amp; FASTag Ready</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl font-black text-slate-905 dark:text-white leading-tight tracking-tight">
-            Premium Commercial <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-brand-555">Fleet Management</span>
+            TransitOps <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-500">Smart Transport Operations</span>
           </h1>
 
           <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl">
-            Audit vehicle operational margins, track active dispatches on map grids, log maintenance lockouts, check license compliance automatically, and generate executive ROI summaries.
+            Trusted by fleet operators across India. Audit vehicle operational margins, track active dispatches on Gujarat &amp; national highway grids, log workshop maintenance, ensure license &amp; FASTag compliance, and generate GST transport reports.
           </p>
+
+          <div className="flex flex-wrap gap-2 text-xs font-bold text-slate-600 dark:text-slate-300">
+            <span className="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">GST Compliant</span>
+            <span className="px-3 py-1 rounded-lg bg-blue-500/10 text-blue-600 border border-blue-500/20">FASTag Ready</span>
+            <span className="px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">Indian Transport Standards</span>
+          </div>
 
           {/* Quick Stats Banner */}
           <div className="grid grid-cols-3 gap-4 border-y border-slate-200 dark:border-slate-800 py-6 max-w-lg text-left">
             <div>
-              <span className="text-2xl font-black text-slate-900 dark:text-white block">94%</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Fleet Health</span>
+              <span className="text-2xl font-black text-slate-900 dark:text-white block">97%</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">On-Time Delivery</span>
             </div>
             <div>
-              <span className="text-2xl font-black text-slate-900 dark:text-white block">2.4m</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Trips Audited</span>
+              <span className="text-2xl font-black text-slate-900 dark:text-white block">4.8 km/L</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Avg Mileage</span>
             </div>
             <div>
-              <span className="text-2xl font-black text-slate-900 dark:text-white block">₹14M</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">ROI Ledger Yield</span>
+              <span className="text-2xl font-black text-slate-900 dark:text-white block">₹1,24,500</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Today's Revenue</span>
             </div>
           </div>
 

@@ -70,7 +70,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             </div>
             <div className="flex flex-col text-left">
               <span className="text-sm font-black tracking-wider text-slate-900 dark:text-white leading-none">TRANSIT OPS</span>
-              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest">Fleet Operations</span>
+              <span className="text-[10px] font-bold text-amber-500 dark:text-amber-400 mt-1 uppercase tracking-widest">Indian Transport</span>
             </div>
           </div>
           <button

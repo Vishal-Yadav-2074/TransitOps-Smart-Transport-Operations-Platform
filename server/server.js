@@ -36,7 +36,7 @@ async function startServer() {
     await sequelize.sync();
     console.log('[MySQL Logger]: Models synchronized with tables.');
 
-    // 4. Seed default user roles if empty
+    // 4. Seed default user roles and Indian transport demo data
     const userCount = await User.count();
     if (userCount === 0) {
       const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10');
@@ -49,6 +49,9 @@ async function startServer() {
       ]);
       console.log('[MySQL Logger]: Default user roles seeded successfully.');
     }
+
+    const { seedIndianTransportData } = require('./database/seed');
+    await seedIndianTransportData();
 
     // 5. Bind port and start listening
     app.listen(PORT, () => {

@@ -62,7 +62,16 @@ export default function NotificationCenter() {
         }
       });
 
-      // 3. Get completed trips
+      // 3. Indian Transport Specific Telemetry Alerts
+      list.push(
+        { id: 'ind-1', type: 'fastag', text: 'FASTag balance low (₹3,250 left). Auto-recharge threshold ₹1,500', time: '10 mins ago', icon: Info, color: 'text-amber-500 bg-amber-50 dark:bg-amber-950/20 border-amber-250 dark:border-amber-900/30' },
+        { id: 'ind-2', type: 'geofence', text: 'Vehicle GJ-01-AB-4587 entered Maharashtra border checkpoint', time: '25 mins ago', icon: CheckCircle, color: 'text-blue-500 bg-blue-50 dark:bg-blue-955/20 border-blue-250 dark:border-blue-900/30' },
+        { id: 'ind-3', type: 'puc', text: 'PUC pollution certificate expires tomorrow for Tata Prima GJ-18-KL-2281', time: '1 hour ago', icon: AlertTriangle, color: 'text-rose-500 bg-rose-50 dark:bg-rose-955/20 border-rose-250 dark:border-rose-900/30' },
+        { id: 'ind-4', type: 'insurance', text: 'Insurance renewal pending for BharatBenz MH-12-TR-8541', time: '2 hours ago', icon: AlertTriangle, color: 'text-rose-500 bg-rose-50 dark:bg-rose-955/20 border-rose-250 dark:border-rose-900/30' },
+        { id: 'ind-5', type: 'hub', text: 'Vehicle Ashok Leyland 2820 reached Surat Hub on time (270 km)', time: '3 hours ago', icon: CheckCircle, color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 border-emerald-250 dark:border-emerald-900/30' }
+      );
+
+      // 4. Get completed trips
       const tRes = await tripService.getAll();
       const trips = (tRes.data || []).slice(0, 8); // Grab latest
       trips.forEach(t => {
@@ -70,7 +79,7 @@ export default function NotificationCenter() {
           list.push({
             id: `t-comp-${t.id}`,
             type: 'trip',
-            text: `Trip ${t.name} (from ${t.source} to ${t.dest}) completed successfully`,
+            text: `Trip ${t.tripCode || 'TRIP'} (from ${t.origin || 'Ahmedabad'} to ${t.destination || 'Surat'}) completed successfully`,
             time: 'Completed',
             icon: CheckCircle,
             color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 border-emerald-250 dark:border-emerald-900/30'

@@ -7,11 +7,11 @@ export default function CalendarWidget() {
   const daysInMonth = 31;
   const startDayOffset = 3; // July 2026 starts on a Wednesday (3rd index)
 
-  // Demo tasks mapped to specific dates
+  // Indian transport events & holidays mapped to specific dates
   const events = {
-    12: { type: 'trip', label: 'Trip to Pune (Anil Sharma)', color: 'bg-indigo-500' },
-    15: { type: 'maint', label: 'Ashok Leyland Workshop Slot', color: 'bg-amber-500' },
-    24: { type: 'lic', label: 'Rahul Licence Expiry Renewal', color: 'bg-rose-500' }
+    12: { type: 'trip', label: 'Dispatch Ahmedabad ➔ Surat (Rahul Patel)', color: 'bg-indigo-500' },
+    15: { type: 'maint', label: 'Tata Authorized Service Center Slot', color: 'bg-amber-500' },
+    24: { type: 'lic', label: 'Rakesh Singh Driving Licence Expiry', color: 'bg-rose-500' }
   };
 
   const renderCells = () => {

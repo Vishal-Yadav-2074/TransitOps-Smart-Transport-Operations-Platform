@@ -14,11 +14,13 @@ export default function DriverDrawer({ driver, isOpen, onClose }) {
       if (stored) {
         setDocuments(JSON.parse(stored));
       } else {
-        // Seed default driver compliance checklist
+        // Seed default Indian driver compliance checklist
         const defaults = [
-          { type: 'Commercial License', name: `dl_${driver.name.toLowerCase().replace(' ', '_')}.pdf`, date: '2026-02-15', size: '1.4 MB' },
+          { type: 'Driving License', name: `dl_${driver.name.toLowerCase().replace(' ', '_')}.pdf`, date: '2026-02-15', size: '1.4 MB' },
+          { type: 'Aadhaar', name: `aadhaar_card_${driver.id}.pdf`, date: '2026-01-10', size: '850 KB' },
+          { type: 'PAN', name: `pan_card_${driver.id}.pdf`, date: '2026-01-10', size: '620 KB' },
           { type: 'Medical Certificate', name: `medical_cert_${driver.id}.pdf`, date: '2026-01-20', size: '920 KB' },
-          { type: 'Background Check', name: `bg_verification.pdf`, date: '2025-11-10', size: '2.1 MB' }
+          { type: 'Police Verification', name: `police_verification_${driver.id}.pdf`, date: '2025-11-10', size: '2.1 MB' }
         ];
         setDocuments(defaults);
         localStorage.setItem(`driver_docs_${driver.id}`, JSON.stringify(defaults));

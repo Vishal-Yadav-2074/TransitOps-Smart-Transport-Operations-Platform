@@ -369,15 +369,21 @@ export default function Maintenance() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Assigned Mechanic</label>
-                  <input
-                    type="text"
+                  <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Authorized Workshop</label>
+                  <select
                     required
                     value={mechanic}
                     onChange={(e) => setMechanic(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-955 px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:border-indigo-650 focus:outline-none"
-                    placeholder="Mechanic Name"
-                  />
+                  >
+                    <option value="">-- Select Indian Service Hub --</option>
+                    <option value="Tata Authorized Service Center">Tata Authorized Service Center</option>
+                    <option value="Ashok Leyland Workshop">Ashok Leyland Workshop</option>
+                    <option value="Mahindra Service Hub">Mahindra Service Hub</option>
+                    <option value="BharatBenz Workshop">BharatBenz Workshop</option>
+                    <option value="JK Tyre Center">JK Tyre Center</option>
+                    <option value="MRF Truck Care">MRF Truck Care</option>
+                  </select>
                 </div>
                 <div>
                   <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Downtime Estimate (Hours)</label>

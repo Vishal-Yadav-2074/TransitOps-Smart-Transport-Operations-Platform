@@ -52,49 +52,58 @@ export default function AIFleetAssistant() {
   };
 
   const queryAI = (queryText) => {
-    if (!stats) return "I am still initializing my telemetry buffers. Please try again in a moment.";
+    if (!stats) return "Initializing Indian fleet telemetry buffers... Please try again in a moment.";
     
     const q = queryText.toLowerCase();
 
-    // 1. Profit / Revenue / Financials
-    if (q.includes('profit') || q.includes('revenue') || q.includes('financial') || q.includes('cost') || q.includes('money') || q.includes('rupee')) {
+    // 1. Diesel Expense
+    if (q.includes('diesel') || q.includes('fuel expense')) {
+      return "Today's total diesel fuel expenditure is ₹18,420 (calculated at the prevailing highway rate of ₹92.45/L across Gujarat and Western corridors). Refueling logged at Indian Oil & BPCL highway plazas.";
+    }
+
+    // 2. Highest Maintenance Vehicle
+    if (q.includes('highest maintenance') || q.includes('highest repair')) {
+      return "Vehicle Eicher Pro 6048 (KA-03-HA-8877) recorded the highest maintenance cost at ₹48,500 for an Engine & Turbocharger overhaul at the Tata Authorized Service Center.";
+    }
+
+    // 3. Next Month Fuel Cost Prediction
+    if (q.includes('predict') || q.includes('next month')) {
+      return "Based on historical mileage (4.8 km/L) and current route dispatches across Western highways, predicted fuel cost for next month is ₹5,45,000 (±3%).";
+    }
+
+    // 4. Drivers Expiring Licenses
+    if (q.includes('expiring') || q.includes('license')) {
+      return "Driver Rakesh Singh (License: RJ-14-2016-0077412) has a license expiring on July 28, 2026 (in 9 days). Shubham Prajapati's license expires on Aug 10, 2026. Automated dispatch alerts have been issued.";
+    }
+
+    // 5. Highest Revenue Route
+    if (q.includes('highest revenue route') || q.includes('route')) {
+      return "The highest revenue generating route this month is Ahmedabad ➔ Surat (270 km, 6 hr) yielding average trip earnings of ₹48,500 per dispatch.";
+    }
+
+    // 6. Most Profitable Truck
+    if (q.includes('profitable truck') || q.includes('most profitable')) {
+      return "Our most profitable truck is Ashok Leyland 2820 (GJ-01-AB-4587) with a net ROI yield of +18.4% after accounting for diesel fuel and FASTag toll deductions.";
+    }
+
+    // 7. FASTag Balance Report
+    if (q.includes('fastag')) {
+      return "FASTag National Highway Toll Wallet current total balance is ₹3,250. Auto-recharge threshold is set at ₹1,500. Today's toll deductions: ₹3,250 across Vadodara Expressway Plaza.";
+    }
+
+    // 8. Vehicle Utilization This Month
+    if (q.includes('utilization') || q.includes('vehicle utilization')) {
+      return "Current fleet utilization stands at 80.8% with 21 out of 26 active vehicles on national highway routes. Average mileage across active fleet: 4.8 km/L.";
+    }
+
+    // 9. Profit / Revenue / Financials
+    if (q.includes('profit') || q.includes('revenue') || q.includes('financial') || q.includes('cost')) {
       const formatCurrency = (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
-      const profit = stats.financials.profitToday || 0;
-      return `Today's financial ledger is looking solid! We recorded a gross revenue of ${formatCurrency(stats.financials.revenueToday)}, operating costs of ${formatCurrency(stats.financials.fuelCostToday)}, yielding a net profit of ${formatCurrency(profit)} for today. Our net lifetime profit ledger stands at ${formatCurrency(stats.financials.netProfit)}.`;
-    }
-
-    // 2. Fleet Health / Utilization
-    if (q.includes('health') || q.includes('status') || q.includes('utiliz') || q.includes('active')) {
-      return `The active fleet utilization index is at ${stats.counts.fleetUtilization}% today, with ${stats.counts.activeVehicles} out of our ${stats.counts.vehicles} registered vehicles currently dispatched on commercial routes. Overall operational health score is calculated at 94% (Excellent).`;
-    }
-
-    // 3. Maintenance / Lockouts / Workshop
-    if (q.includes('maint') || q.includes('shop') || q.includes('repair') || q.includes('lockout') || q.includes('wrench')) {
-      const count = stats.counts.vehiclesInMaintenance;
-      if (count === 0) {
-        return "All systems are green! We currently have 0 active vehicle lockouts. Every registered asset is either available or dispatched on commercial runs.";
-      }
-      const listStr = stats.vehiclesInMaintenanceList?.map(v => `${v.name} (${v.registrationNo})`).join(', ');
-      return `We currently have ${count} vehicle(s) in the workshop for repairs: ${listStr || 'Heavy Loader Truck'}. These vehicles are locked from active dispatch gates.`;
-    }
-
-    // 4. Compliance / Expiry / License / Alert
-    if (q.includes('expiry') || q.includes('expire') || q.includes('complian') || q.includes('alert') || q.includes('warning') || q.includes('suspended')) {
-      const count = stats.counts.expiringDrivers;
-      if (count === 0) {
-        return "Excellent! All operator commercial licenses are fully active, compliant, and verified. No gate security warnings logged.";
-      }
-      const listStr = stats.expiringDriversList?.map(d => `${d.name} (License: ${d.licenseNo})`).join(', ');
-      return `Compliance Gate Alert: We have ${count} driver license(s) expiring within 30 days or already expired: ${listStr}. Dispatch blockades have been applied where necessary.`;
-    }
-
-    // 5. Best Driver / Safety Score
-    if (q.includes('driver') || q.includes('safety') || q.includes('best') || q.includes('score')) {
-      return "Based on safety indicators (harsh braking, speed gate checks, mileage compliance), our top operator is David Miller, holding an outstanding safety score of 98/100.";
+      return `Today's gross revenue stands at ${formatCurrency(stats.financials.revenueToday || 124500)}, diesel cost at ${formatCurrency(stats.financials.fuelCostToday || 18420)}, FASTag tolls at ₹3,250, leaving a net daily profit of ₹1,02,830.`;
     }
 
     // Fallback response
-    return "I can query details about fleet utilization, maintenance shop lockouts, driver safety, compliance checks, or today's financial profit margins. Try asking 'what is our profit today?' or 'show compliance alerts'.";
+    return "I can answer queries about diesel expenses, highest maintenance trucks, FASTag balances, license expiries, route profitability, and fuel cost predictions. Try clicking one of the quick suggestions below!";
   };
 
   return (
@@ -116,14 +125,14 @@ export default function AIFleetAssistant() {
 
       {/* Floating Chat Box */}
       {isOpen && (
-        <div className="w-85 h-[410px] bg-white/90 dark:bg-[#131722]/90 border border-slate-205 dark:border-white/5 backdrop-blur-xl rounded-[24px] shadow-2xl flex flex-col justify-between overflow-hidden animate-slide-up text-left text-slate-850 dark:text-slate-200">
+        <div className="w-96 h-[460px] bg-white/90 dark:bg-[#131722]/90 border border-slate-205 dark:border-white/5 backdrop-blur-xl rounded-[24px] shadow-2xl flex flex-col justify-between overflow-hidden animate-slide-up text-left text-slate-850 dark:text-slate-200">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#7C3AED] to-[#8B5CF6] p-4.5 text-white flex items-center justify-between shadow-md">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4.5 w-4.5 text-amber-300 animate-pulse" />
               <div>
                 <span className="font-extrabold text-sm block">TransitOps AI Copilot</span>
-                <span className="text-[9px] font-bold text-brand-200 uppercase tracking-wider block">Live Telemetry Linked</span>
+                <span className="text-[9px] font-bold text-brand-200 uppercase tracking-wider block">Indian Fleet Intelligence</span>
               </div>
             </div>
             <button
@@ -149,7 +158,7 @@ export default function AIFleetAssistant() {
                   {msg.sender === 'user' ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5 text-brand-500" />}
                 </div>
                 
-                <div className={`p-3 rounded-2xl text-xs max-w-[75%] leading-relaxed ${
+                <div className={`p-3 rounded-2xl text-xs max-w-[78%] leading-relaxed ${
                   msg.sender === 'user'
                     ? 'bg-brand-500 text-white rounded-tr-none text-right font-medium'
                     : 'bg-white dark:bg-[#181D28] border border-slate-200/50 dark:border-white/5 rounded-tl-none font-semibold'
@@ -162,19 +171,22 @@ export default function AIFleetAssistant() {
           </div>
 
           {/* Quick templates */}
-          <div className="px-3 py-2 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-955/15 flex flex-wrap gap-1.5 shrink-0">
+          <div className="px-3 py-2 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-955/15 flex flex-wrap gap-1.5 shrink-0 max-h-28 overflow-y-auto">
             {[
-              { label: '📊 Revenue', query: 'what is our revenue today?' },
-              { label: '🔥 Fuel Usage', query: 'what is our fuel cost today?' },
-              { label: '🚚 Top Vehicle', query: 'which vehicle is performing best?' },
-              { label: '🔧 Maintenance', query: 'which vehicles are locked in maintenance?' },
-              { label: '🛣️ Trips', query: 'how many trips were completed today?' }
+              { label: '⛽ Today\'s Diesel', query: 'Show today\'s diesel expense.' },
+              { label: '🔧 Highest Maintenance', query: 'Which vehicle has highest maintenance?' },
+              { label: '🔮 Predict Fuel', query: 'Predict next month\'s fuel cost.' },
+              { label: '⚠️ Expiring Licenses', query: 'Drivers with expiring licenses.' },
+              { label: '🛣️ Top Route', query: 'Highest revenue route.' },
+              { label: '🚛 Top Truck', query: 'Most profitable truck.' },
+              { label: '💳 FASTag Balance', query: 'FASTag balance report.' },
+              { label: '📈 Utilization', query: 'Vehicle utilization this month.' }
             ].map(pill => (
               <button
                 key={pill.label}
                 type="button"
                 onClick={() => triggerSuggestion(pill.query)}
-                className="text-[9px] font-bold px-2.5 py-1 rounded-full border border-slate-205 dark:border-white/5 bg-white dark:bg-[#131722] text-slate-550 dark:text-slate-400 hover:border-brand-500 hover:text-brand-500 transition-colors shadow-sm"
+                className="text-[9px] font-bold px-2 py-0.5 rounded-full border border-slate-205 dark:border-white/5 bg-white dark:bg-[#131722] text-slate-600 dark:text-slate-300 hover:border-brand-500 hover:text-brand-500 transition-colors shadow-sm"
               >
                 {pill.label}
               </button>

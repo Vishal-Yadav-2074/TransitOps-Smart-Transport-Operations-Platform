@@ -268,15 +268,18 @@ export default function FuelExpenses() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Expense Type</label>
+                  <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Expense Type / Fuel Category</label>
                   <select
                     value={expenseType}
                     onChange={(e) => setExpenseType(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-955 px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:border-indigo-650 focus:outline-none"
                   >
-                    <option value="fuel">Fuel</option>
-                    <option value="toll">Toll</option>
-                    <option value="other">Other</option>
+                    <option value="fuel">Diesel (₹92.45/L)</option>
+                    <option value="cng">CNG Station</option>
+                    <option value="electric">Electric Charging</option>
+                    <option value="lng">LNG Fuel</option>
+                    <option value="tolls">FASTag Highway Toll</option>
+                    <option value="other">Other Operational Expense</option>
                   </select>
                 </div>
               </div>

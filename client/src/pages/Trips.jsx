@@ -323,27 +323,60 @@ export default function Trips() {
                 </div>
               )}
 
+              {/* Indian Route Presets */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Popular Indian Transport Routes (1-Click Preset):</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { s: 'Ahmedabad', d: 'Surat', dist: 270, rev: 48500 },
+                    { s: 'Mumbai', d: 'Pune', dist: 148, rev: 32000 },
+                    { s: 'Ahmedabad', d: 'Rajkot', dist: 215, rev: 26000 },
+                    { s: 'Gandhinagar', d: 'Bhavnagar', dist: 200, rev: 31000 },
+                    { s: 'Surat', d: 'Vapi', dist: 115, rev: 18000 },
+                    { s: 'Rajkot', d: 'Jamnagar', dist: 92, rev: 15000 },
+                    { s: 'Delhi', d: 'Jaipur', dist: 280, rev: 42000 },
+                    { s: 'Pune', d: 'Nashik', dist: 210, rev: 29000 },
+                    { s: 'Bengaluru', d: 'Mysuru', dist: 145, rev: 22000 },
+                    { s: 'Hyderabad', d: 'Vijayawada', dist: 275, rev: 39000 }
+                  ].map(r => (
+                    <button
+                      key={`${r.s}-${r.d}`}
+                      type="button"
+                      onClick={() => {
+                        setSource(r.s);
+                        setDest(r.d);
+                        setPlannedDist(r.dist);
+                        setRevenue(r.rev);
+                      }}
+                      className="text-[10px] font-bold px-2 py-1 rounded-lg border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white transition-colors"
+                    >
+                      {r.s} ➔ {r.d} ({r.dist} km)
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Source</label>
+                  <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Source Hub</label>
                   <input
                     type="text"
                     required
                     value={source}
                     onChange={(e) => setSource(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:border-indigo-600 focus:outline-none"
-                    placeholder="e.g. Mumbai, MH"
+                    placeholder="e.g. Ahmedabad, GJ"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Destination</label>
+                  <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Destination Hub</label>
                   <input
                     type="text"
                     required
                     value={dest}
                     onChange={(e) => setDest(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:border-indigo-600 focus:outline-none"
-                    placeholder="e.g. Pune, MH"
+                    placeholder="e.g. Surat, GJ"
                   />
                 </div>
               </div>

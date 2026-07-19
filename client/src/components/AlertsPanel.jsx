@@ -40,8 +40,8 @@ export default function AlertsPanel({ stats }) {
     {
       id: 'fuel-anomaly-1',
       type: 'fuel',
-      title: 'Fuel Spike Anomaly',
-      desc: 'Vehicle MH-12-RT-8821 logged +18% hourly consumption rate.',
+      title: 'Fuel Consumption Anomaly',
+      desc: 'Vehicle GJ-01-AB-4587 logged unusual fuel consumption rate on Vadodara Expressway.',
       time: '2 hours ago',
       icon: Flame,
       color: 'text-red-500 bg-red-500/10 border-red-500/20',
@@ -51,8 +51,8 @@ export default function AlertsPanel({ stats }) {
     {
       id: 'roi-alert-1',
       type: 'roi',
-      title: 'Low Return Yield Alert',
-      desc: 'Asset MH-12-XY-4921 logged ROI yield below threshold (2.1%).',
+      title: 'FASTag Balance Warning',
+      desc: 'FASTag Wallet balance for MH-12-TR-8541 is below auto-recharge threshold.',
       time: 'Today',
       icon: TrendingDown,
       color: 'text-rose-400 bg-rose-500/10 border-rose-500/15',
@@ -62,8 +62,8 @@ export default function AlertsPanel({ stats }) {
     {
       id: 'ins-expiry-1',
       type: 'insurance',
-      title: 'Insurance Renewal Due',
-      desc: 'MH-12-AQ-9012 commercial policy expires in 14 days.',
+      title: 'Insurance & PUC Renewal Pending',
+      desc: 'Tata Prima GJ-18-KL-2281 commercial insurance and PUC policy expire tomorrow.',
       time: 'Pending',
       icon: AlertTriangle,
       color: 'text-amber-400 bg-amber-500/10 border-amber-500/15',

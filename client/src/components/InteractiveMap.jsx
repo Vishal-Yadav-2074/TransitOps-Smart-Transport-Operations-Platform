@@ -5,12 +5,16 @@ export default function InteractiveMap() {
   const mapRef = useRef(null);
   const tileLayerRef = useRef(null);
 
-  // Locations definition
+  // Locations definition - Centered on Gujarat Hubs & Western Corridor
   const ahmedabad = [23.0225, 72.5714];
   const destinations = [
-    { name: 'Rajkot', coords: [22.3039, 70.8022], truck: 'Truck 1 (KA-03-HA-8877)' },
-    { name: 'Surat', coords: [21.1702, 72.8311], truck: 'Truck 2 (MH-12-GP-1234)' },
-    { name: 'Vadodara', coords: [22.3072, 73.1812], truck: 'Truck 3 (GJ-01-XX-9999)' }
+    { name: 'Surat', coords: [21.1702, 72.8311], truck: 'Ashok Leyland 2820 (GJ-01-AB-4587)' },
+    { name: 'Rajkot', coords: [22.3039, 70.8022], truck: 'Mahindra Blazo X (RJ-14-TA-2298)' },
+    { name: 'Vadodara', coords: [22.3072, 73.1812], truck: 'Tata Prima 5530.S (GJ-18-KL-2281)' },
+    { name: 'Bhavnagar', coords: [21.7645, 72.1519], truck: 'Force Traveller (GJ-06-MP-3344)' },
+    { name: 'Gandhinagar', coords: [23.2156, 72.6369], truck: 'Tata Ace Gold (GJ-27-BA-9911)' },
+    { name: 'Mumbai', coords: [19.0760, 72.8777], truck: 'BharatBenz 3528R (MH-12-TR-8541)' },
+    { name: 'Pune', coords: [18.5204, 73.8567], truck: 'Eicher Pro 6048 (KA-03-HA-8877)' }
   ];
 
   // Interpolation helper to get intermediate position (0 to 1)

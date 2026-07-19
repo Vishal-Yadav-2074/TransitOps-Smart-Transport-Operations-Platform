@@ -15,12 +15,15 @@ export default function VehicleDrawer({ vehicle, isOpen, onClose }) {
       if (stored) {
         setDocuments(JSON.parse(stored));
       } else {
-        // Seed default document checklist
+        // Seed default Indian vehicle document checklist
         const defaults = [
+          { type: 'RC Book', name: `rc_${vehicle.registrationNo.toLowerCase()}.pdf`, date: '2026-01-10', size: '1.8 MB' },
           { type: 'Insurance', name: `insurance_${vehicle.registrationNo.toLowerCase()}.pdf`, date: '2026-01-10', size: '2.4 MB' },
-          { type: 'RC', name: `rc_${vehicle.registrationNo.toLowerCase()}.pdf`, date: '2026-01-10', size: '1.8 MB' },
-          { type: 'Fitness', name: `fitness_certificate.pdf`, date: '2026-03-05', size: '1.2 MB' },
-          { type: 'PUC', name: `puc_pollution_cert.pdf`, date: '2026-05-18', size: '750 KB' }
+          { type: 'Fitness Certificate', name: `fitness_certificate.pdf`, date: '2026-03-05', size: '1.2 MB' },
+          { type: 'PUC Certificate', name: `puc_pollution_cert.pdf`, date: '2026-05-18', size: '750 KB' },
+          { type: 'National Permit', name: `national_permit.pdf`, date: '2026-02-14', size: '1.5 MB' },
+          { type: 'FASTag', name: `fastag_nhai_tag.pdf`, date: '2026-04-01', size: '600 KB' },
+          { type: 'Road Tax', name: `road_tax_receipt.pdf`, date: '2026-01-15', size: '900 KB' }
         ];
         setDocuments(defaults);
         localStorage.setItem(`vehicle_docs_${vehicle.id}`, JSON.stringify(defaults));

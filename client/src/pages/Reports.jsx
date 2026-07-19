@@ -388,47 +388,38 @@ export default function Reports() {
         </div>
       </div>
 
-      {/* Available Reports list */}
-      <div className="grid gap-6 md:grid-cols-2">
-        
-        {/* Report Card 1 */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6 flex flex-col justify-between backdrop-blur-md">
-          <div>
-            <div className="h-10 w-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-4">
-              <TrendingUp className="h-5 w-5" />
+      {/* Available Reports list (Indian Logistics Standards) */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {[
+          { title: 'GST Transport & Tax Report', desc: 'Compliant GST invoices, ITC input tax credits, and state tax breakdowns for logistics filing.', color: 'emerald', type: 'gst' },
+          { title: 'Fuel & Diesel Expense Report', desc: 'Refueling audit logs, pump location receipts, fuel efficiency mileage (km/L) per truck.', color: 'amber', type: 'fuel' },
+          { title: 'Driver Salary & Payout Report', desc: 'Driver duty hours, monthly salaries, trip allowances, and safety performance bonuses.', color: 'blue', type: 'salary' },
+          { title: 'FASTag Highway Toll Report', desc: 'NHAI FASTag toll plaza transactions, automatic wallet recharges, and route toll costs.', color: 'purple', type: 'fastag' },
+          { title: 'State-wise Revenue Analysis', desc: 'Regional earnings distribution across Gujarat, Maharashtra, Rajasthan, Delhi, etc.', color: 'indigo', type: 'state' },
+          { title: 'Monthly Fleet Utilization', desc: 'Asset uptime percentages, active highway days, and idle workshop days summary.', color: 'blue', type: 'utilization' },
+          { title: 'Vehicle-wise Profitability & ROI', desc: 'Individual truck revenues, maintenance repair costs, and net ROI yield performance.', color: 'emerald', type: 'vehicles' },
+          { title: 'Insurance Renewal Audit', desc: 'Policy expiration tracking, third-party liability coverage, and premium schedules.', color: 'rose', type: 'insurance' },
+          { title: 'Road Tax & Permit Report', desc: 'RTO road tax status, National Permit renewals, and interstate clearance documentation.', color: 'amber', type: 'roadtax' },
+          { title: 'Trip Profitability Ledger', desc: 'Per-trip margin analysis comparing freight charges against fuel, tolls, and driver pay.', color: 'indigo', type: 'tripprofit' }
+        ].map(rpt => (
+          <div key={rpt.title} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6 flex flex-col justify-between backdrop-blur-md hover:border-indigo-500/50 transition-all">
+            <div>
+              <div className="h-10 w-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4 font-bold">
+                <FileText className="h-5 w-5" />
+              </div>
+              <h3 className="text-base font-extrabold text-slate-900 dark:text-white">{rpt.title}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+                {rpt.desc}
+              </p>
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Vehicle Profitability &amp; ROI Yields</h3>
-            <p className="text-xs text-slate-505 dark:text-slate-400 mt-1.5 leading-relaxed">
-              Consolidated breakdown of each registered vehicle, comparing initial acquisition capital to trip earnings and total maintenance repair bills.
-            </p>
+            <button
+              onClick={() => handleExportCSV(rpt.type)}
+              className="mt-6 flex items-center justify-center gap-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-indigo-600 hover:text-white py-2.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 transition-all shadow-sm"
+            >
+              <FileDown className="h-4 w-4" /> Export GST / CSV
+            </button>
           </div>
-          <button
-            onClick={() => handleExportCSV('vehicles')}
-            className="mt-6 flex items-center justify-center gap-1.5 w-full rounded-xl border border-slate-205 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 py-3 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-all duration-200"
-          >
-            <FileDown className="h-4 w-4" /> Download CSV Report
-          </button>
-        </div>
-
-        {/* Report Card 2 */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6 flex flex-col justify-between backdrop-blur-md">
-          <div>
-            <div className="h-10 w-10 rounded-xl bg-blue-50 dark:bg-blue-955/40 border border-blue-200 dark:border-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
-              <IndianRupee className="h-5 w-5" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Operational Expense Breakdown</h3>
-            <p className="text-xs text-slate-550 dark:text-slate-400 mt-1.5 leading-relaxed">
-              Aggregated operational ledger category breakdown (Fuel, Toll tickets, and Maintenance logs) for tax audits and company balance sheets.
-            </p>
-          </div>
-          <button
-            onClick={() => handleExportCSV('expenses')}
-            className="mt-6 flex items-center justify-center gap-1.5 w-full rounded-xl border border-slate-205 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 py-3 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-all duration-200"
-          >
-            <FileDown className="h-4 w-4" /> Download CSV Report
-          </button>
-        </div>
-
+        ))}
       </div>
 
       {/* Fleet Summary Card */}

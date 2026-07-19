@@ -104,9 +104,32 @@ export default function CalendarView() {
     setCurrentDate(new Date(year, month + 1, 1));
   };
 
-  // Map events to date key YYYY-MM-DD
+  // Map events & Indian holidays to date key YYYY-MM-DD
   const eventsByDate = useMemo(() => {
     const map = {};
+
+    // Indian National & Festival Holidays List
+    const indianHolidays = [
+      { date: `${year}-01-14`, title: '🌾 Makar Sankranti' },
+      { date: `${year}-01-26`, title: '🇮🇳 Republic Day' },
+      { date: `${year}-03-25`, title: '🎨 Holi Festival' },
+      { date: `${year}-08-15`, title: '🇮🇳 Independence Day' },
+      { date: `${year}-08-19`, title: '🪡 Raksha Bandhan' },
+      { date: `${year}-09-07`, title: '🐘 Ganesh Chaturthi' },
+      { date: `${year}-10-03`, title: '💃 Navratri Begins' },
+      { date: `${year}-11-01`, title: '🪔 Diwali Festival' }
+    ];
+
+    indianHolidays.forEach(h => {
+      if (!map[h.date]) map[h.date] = [];
+      map[h.date].push({
+        id: `holiday-${h.date}`,
+        title: h.title,
+        type: 'holiday',
+        color: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/30 font-bold',
+        icon: Info
+      });
+    });
 
     if (filterType === 'all' || filterType === 'trips') {
       trips.forEach(t => {
@@ -115,7 +138,7 @@ export default function CalendarView() {
         if (!map[dateKey]) map[dateKey] = [];
         map[dateKey].push({
           id: `trip-${t.id}`,
-          title: `${t.name}: ${t.source} ➔ ${t.dest}`,
+          title: `${t.tripCode || 'TRIP'}: ${t.origin || 'Ahmedabad'} ➔ ${t.destination || 'Surat'}`,
           type: 'trip',
           color: 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/30',
           icon: Milestone,
@@ -130,8 +153,8 @@ export default function CalendarView() {
         if (!map[dateKey]) map[dateKey] = [];
         
         // Parse job name
-        const match = (m.name || '').match(/(.*)\[/);
-        const name = match ? match[1].trim() : m.name;
+        const match = (m.serviceTitle || m.name || '').match(/(.*)\[/);
+        const name = match ? match[1].trim() : (m.serviceTitle || m.name);
 
         map[dateKey].push({
           id: `maint-${m.id}`,
@@ -145,7 +168,7 @@ export default function CalendarView() {
     }
 
     return map;
-  }, [trips, maintenances, filterType]);
+  }, [trips, maintenances, filterType, year]);
 
   const handleEventClick = (e, event) => {
     e.stopPropagation();
